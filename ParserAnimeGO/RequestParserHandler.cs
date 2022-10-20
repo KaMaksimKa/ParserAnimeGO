@@ -26,13 +26,12 @@ namespace ParserAnimeGO
                 await Task.Delay(TimeBetweenRequest * 5);
                 response = await _httpClient.SendAsync(request);
             }
-            
             return response;
         }
        
         public async Task<IDocument> SendHtmlRequestAsync(HttpRequestMessage request)
         {
-            HttpResponseMessage response =await GetResponseWithoutTooManyRequests(request);
+            using var response = await GetResponseWithoutTooManyRequests(request);
             var html = await response.Content.ReadAsStringAsync();
             return await _browsingContext.OpenAsync(req =>
             {
@@ -43,7 +42,7 @@ namespace ParserAnimeGO
         
         public async Task<IDocument> SendJsonRequestAsync(HttpRequestMessage request)
         {
-            HttpResponseMessage response = await GetResponseWithoutTooManyRequests(request);
+            using var response = await GetResponseWithoutTooManyRequests(request);
 
             var jsonText = await response.Content.ReadAsStringAsync();
             JToken jToken = JToken.Parse(jsonText);
