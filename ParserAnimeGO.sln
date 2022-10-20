@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32929.385
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ParserAnimeGO", "ParserAnimeGO\ParserAnimeGO.csproj", "{119CD4A8-F764-460E-B321-FE5AB92689FB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ParserAnimeGO.ConsoleApp", "ParserAnimeGO.ConsoleApp\ParserAnimeGO.ConsoleApp.csproj", "{5F503DA7-2BEC-4EDC-8FE5-F22D06DCEE6B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{119CD4A8-F764-460E-B321-FE5AB92689FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{119CD4A8-F764-460E-B321-FE5AB92689FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{119CD4A8-F764-460E-B321-FE5AB92689FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{119CD4A8-F764-460E-B321-FE5AB92689FB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5F503DA7-2BEC-4EDC-8FE5-F22D06DCEE6B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5F503DA7-2BEC-4EDC-8FE5-F22D06DCEE6B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5F503DA7-2BEC-4EDC-8FE5-F22D06DCEE6B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5F503DA7-2BEC-4EDC-8FE5-F22D06DCEE6B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {72514071-5750-435C-BB33-5AC7E2AC0551}
+	EndGlobalSection
+EndGlobal
