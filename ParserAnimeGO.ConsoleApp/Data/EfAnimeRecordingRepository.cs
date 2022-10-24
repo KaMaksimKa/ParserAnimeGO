@@ -72,12 +72,28 @@ namespace ParserAnimeGO.ConsoleApp.Data
                 await UpdateWithAnimeFromParser(animes, anime);
             }
         }
-        
+
+        public async Task UpdateWithPartialAnimeDataRangeAsync(List<PartialAnimeData> animeDataList)
+        {
+            foreach (var animeData in animeDataList)
+            {
+                await UpdateWithPartialAnimeDataAsync(animeData);
+            }
+        }
+
         public async Task UpdateWithPartialAnimeDataAsync(PartialAnimeData animeData)
         {
             if (await GetByIdFromAnimeGoOrDefault(animeData.IdFromAnimeGo) is { } anime)
             {
                 await UpdateWithPartialAnimeData(animeData, anime);
+            }
+        }
+
+        public async Task UpdateWithMainDataRangeAsync(List<MainAnimeData> animeDataList)
+        {
+            foreach (var animeData in animeDataList)
+            {
+                await UpdateWithMainDataAsync(animeData);
             }
         }
 
@@ -89,11 +105,27 @@ namespace ParserAnimeGO.ConsoleApp.Data
             }
         }
 
+        public async Task UpdateWithShowDataRangeAsync(List<ShowAnimeData> animeDataList)
+        {
+            foreach (var animeData in animeDataList)
+            {
+                await UpdateWithShowDataAsync(animeData);
+            }
+        }
+
         public async Task UpdateWithShowDataAsync(ShowAnimeData animeData)
         {
             if (await GetByIdFromAnimeGoOrDefault(animeData.IdFromAnimeGo) is { } anime)
             {
                 await UpdateWithShowData(animeData, anime);
+            }
+        }
+
+        public async Task UpdateWithDubbingDataRangeAsync(List<DubbingAnimeData> animeDataList)
+        {
+            foreach (var animeData in animeDataList)
+            {
+                await UpdateWithDubbingDataAsync(animeData);
             }
         }
 

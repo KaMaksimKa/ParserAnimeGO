@@ -104,6 +104,66 @@ namespace ParserAnimeGO
             return partialAnimesData.Where(d => idFromAnimeGoList.Contains(d.IdFromAnimeGo)).ToList();
         }
 
+        public async Task<List<MainAnimeData>> GetMainAnimeDataRangeAsync(List<int> idFromAnimeGoList)
+        {
+            List<MainAnimeData> mainAnimesData = new List<MainAnimeData>();
 
+            var partialAnimesData = await GetPartialAnimeDataRangeAsync(idFromAnimeGoList);
+
+            var hrefList = new List<string>();
+            foreach (var partialAnimeData in partialAnimesData)
+            {
+                if (partialAnimeData.Href is { } href)
+                {
+                    hrefList.Add(href);
+                }
+            }
+            return await GetMainAnimeDataRangeAsync(hrefList);
+        }
+
+        public async Task<List<ShowAnimeData>> GetShowAnimeDataRangeAsync(List<int> idFromAnimeGoList)
+        {
+            List<ShowAnimeData> showAnimesData = new List<ShowAnimeData>();
+
+            foreach (var idFromAnimeGo in idFromAnimeGoList)
+            {
+                if (await GetShowAnimeDataByIdFromAnimeGoAsync(idFromAnimeGo) is { } showAnimeData)
+                {
+                    showAnimesData.Add(showAnimeData);
+                }
+            }
+
+            return showAnimesData;
+        }
+
+        public async Task<List<DubbingAnimeData>> GetDubbingAnimeDataRangeAsync(List<int> idFromAnimeGoList)
+        {
+            List<DubbingAnimeData> dubbingAnimesData = new List<DubbingAnimeData>();
+
+            foreach (var idFromAnimeGo in idFromAnimeGoList)
+            {
+                if (await GetDubbingAnimeDataByIdFromAnimeGoAsync(idFromAnimeGo) is { } dubbingAnimeData)
+                {
+                    dubbingAnimesData.Add(dubbingAnimeData);
+                }
+            }
+
+            return dubbingAnimesData;
+        }
+
+        private async Task<List<MainAnimeData>> GetMainAnimeDataRangeAsync(List<string> hrefList)
+        {
+            List<MainAnimeData> mainAnimesData = new List<MainAnimeData>();
+
+            foreach (var href in hrefList)
+            {
+                if (await GetMainAnimeDataByAnimeHrefGoAsync(href) is { } mainAnimeData)
+                {
+                    mainAnimesData.Add(mainAnimeData);
+                }
+            }
+
+            return mainAnimesData;
+        }
     }
 }
