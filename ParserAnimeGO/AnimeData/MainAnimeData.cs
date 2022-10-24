@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ParserAnimeGO
+﻿namespace ParserAnimeGO.AnimeData
 {
     public class MainAnimeData
     {
-        public int? IdFromAnimeGo { get; set; }
+        public int IdFromAnimeGo { get; set; }
         public double? Rate { get; set; }
         public string? Status { get; set; }
         public int? CountEpisode { get; set; }

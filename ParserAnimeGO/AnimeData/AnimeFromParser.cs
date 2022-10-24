@@ -6,7 +6,7 @@ namespace ParserAnimeGO.AnimeData
 {
     public class AnimeFromParser
     {
-        public int? IdFromAnimeGo { get; set; }
+        public int IdFromAnimeGo { get; set; }
         public string? TitleEn { get; set; }
         public string? TitleRu { get; set; }
         public string? Type { get; set; }
@@ -29,6 +29,14 @@ namespace ParserAnimeGO.AnimeData
         public List<string> Genres { get; set; } = new List<string>();
         public List<string> Dubbing { get; set; } = new List<string>();
 
+        public void UpdateWithDubbingPartialAnimeData(PartialAnimeData partialAnimeData)
+        {
+            TitleEn = partialAnimeData.TitleEn;
+            Type = partialAnimeData.Type;
+            Year = partialAnimeData.Year;
+            Description = partialAnimeData.Description;
+            Href = partialAnimeData.Href;
+        }
         public void UpdateWithMainAnimeData(MainAnimeData mainAnimeData)
         {
             Rate = mainAnimeData.Rate;
@@ -39,7 +47,7 @@ namespace ParserAnimeGO.AnimeData
             NextEpisode = mainAnimeData.NextEpisode;
             Studios = mainAnimeData.Studios;
             Genres = mainAnimeData.Genres;
-            Dubbing = Dubbing.Union(mainAnimeData.Dubbing).ToList();
+            Dubbing = mainAnimeData.Dubbing.ToList();
 
         }
         public void UpdateWithShowAnimeData(ShowAnimeData showAnimeData)
@@ -55,15 +63,40 @@ namespace ParserAnimeGO.AnimeData
             Dubbing = Dubbing.Union(dubbingAnimeData.Dubbing).ToList();
         }
 
-        public static AnimeFromParser FromPartialAnimeData(PartialAnimeData partialAnimeData) =>
-            new AnimeFromParser
-            {
-                IdFromAnimeGo = partialAnimeData.IdFromAnimeGo,
-                TitleEn = partialAnimeData.TitleEn,
-                Type = partialAnimeData.Type,
-                Year = partialAnimeData.Year,
-                Description = partialAnimeData.Description,
-                Href = partialAnimeData.Href,
-            };
+
+        public PartialAnimeData ToPartialAnimeData() => new PartialAnimeData
+        {
+            IdFromAnimeGo = IdFromAnimeGo,
+            TitleEn = TitleEn,
+            Type = Type,
+            Year = Year,
+            Description = Description,
+            Href = Href,
+        };
+        public MainAnimeData ToMainAnimeData() => new MainAnimeData
+        {
+            Rate = Rate,
+            Status = Status,
+            CountEpisode = CountEpisode,
+            MpaaRate = MpaaRate,
+            ImgHref = ImgHref,
+            NextEpisode = NextEpisode,
+            Studios = Studios,
+            Genres = Genres,
+            Dubbing = Dubbing,
+        };
+        public ShowAnimeData ToShowAnimeData() => new ShowAnimeData
+        {
+            Planned = Planned,
+            Completed = Completed,
+            Watching = Watching,
+            Dropped = Dropped,
+            OnHold = OnHold,
+        };
+        public DubbingAnimeData ToDubbingAnimeData() => new DubbingAnimeData
+        {
+            Dubbing = Dubbing
+        };
+   
     }
 }

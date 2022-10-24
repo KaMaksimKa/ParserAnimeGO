@@ -4,7 +4,7 @@ namespace ParserAnimeGO
 {
     public class AnimeGoUriFactory: IAnimeGoUriFactory
     {
-        private readonly string _defaultUrl  = "https://animego.org/anime";
+        private readonly string _defaultUrl  = $"https://animego.org/anime";
         public Uri GetAnimesByPageUri(int numberOfPage)
         {
             string url = _defaultUrl + $"?&page={numberOfPage}";

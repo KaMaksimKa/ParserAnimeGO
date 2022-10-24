@@ -2,7 +2,7 @@
 {
     public class ShowAnimeData
     {
-        public int? IdFromAnimeGo { get; set; }
+        public int IdFromAnimeGo { get; set; }
         public int? Planned { get; set; }
         public int? Completed { get; set; }
         public int? Watching { get; set; }

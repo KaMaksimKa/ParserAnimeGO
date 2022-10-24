@@ -12,9 +12,9 @@ namespace ParserAnimeGO.Interface
     public interface IAnimeParserFromIDocument
     {
         public List<PartialAnimeData> GetPartialAnime(IDocument document);
-        public MainAnimeData GetMainDataAnime(IDocument document);
-        public ShowAnimeData GetShowDataAnime(IDocument document);
-        public DubbingAnimeData GetDubbingDataAnimeFromPlayerAsync(IDocument document);
+        public MainAnimeData? GetMainDataAnime(IDocument document);
+        public ShowAnimeData? GetShowDataAnime(IDocument document);
+        public DubbingAnimeData? GetDubbingDataAnimeFromPlayerAsync(IDocument document);
 
     }
 }

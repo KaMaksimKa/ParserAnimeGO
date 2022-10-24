@@ -12,57 +12,79 @@ namespace ParserAnimeGO
         public List<PartialAnimeData> GetPartialAnime(IDocument document)
         {
             List<PartialAnimeData> animeList = new List<PartialAnimeData>();
-            foreach (var e in document.QuerySelectorAll(".animes-list-item"))
+
+            if (document.StatusCode == HttpStatusCode.OK)
             {
-                string? href = e.QuerySelector(".h5")?.QuerySelector("a")?.GetAttribute("href")?.Trim();
-                int.TryParse(href?.Split("-")[^1], out int idFromAnimeGoResult);
-                int? idFromAnimeGo = idFromAnimeGoResult == 0 ? null : idFromAnimeGoResult;
-                var nameRu = e.QuerySelector(".h5")?.Text().Trim();
-                var nameEn = e.QuerySelector(".text-gray-dark-6 ")?.Text().Trim();
-                var type = e.QuerySelector("span")?.QuerySelector("a")?.Text().Trim();
-                int.TryParse(e.QuerySelector(".anime-year")?.QuerySelector("a")?.Text().Trim(), out int yearResult);
-                int? year = yearResult == 0 ? null : yearResult;
-                var description = e.QuerySelector(".description")?.Text().Trim();
-                animeList.Add(new PartialAnimeData
+                foreach (var e in document.QuerySelectorAll(".animes-list-item"))
                 {
-                    Href = href,
-                    IdFromAnimeGo = idFromAnimeGo,
-                    TitleEn = nameEn,
-                    TitleRu = nameRu,
-                    Description = description,
-                    Type = type,
-                    Year = year,
-                });
+                    string? href = e.QuerySelector(".h5")?.QuerySelector("a")?.GetAttribute("href")?.Trim();
+                    int.TryParse(href?.Split("-")[^1], out int idFromAnimeGoResult);
+                    int? idFromAnimeGo = idFromAnimeGoResult == 0 ? null : idFromAnimeGoResult;
+
+                    var nameRu = e.QuerySelector(".h5")?.Text().Trim();
+
+                    var nameEn = e.QuerySelector(".text-gray-dark-6 ")?.Text().Trim();
+
+                    var type = e.QuerySelector("span")?.QuerySelector("a")?.Text().Trim();
+
+                    int.TryParse(e.QuerySelector(".anime-year")?.QuerySelector("a")?.Text().Trim(), out int yearResult);
+                    int? year = yearResult == 0 ? null : yearResult;
+
+                    var description = e.QuerySelector(".description")?.Text().Trim();
+
+                    if (idFromAnimeGo != null)
+                    {
+                        animeList.Add(new PartialAnimeData
+                        {
+                            Href = href,
+                            IdFromAnimeGo = idFromAnimeGo.Value,
+                            TitleEn = nameEn,
+                            TitleRu = nameRu,
+                            Description = description,
+                            Type = type,
+                            Year = year,
+                        });
+                    }
+
+                }
             }
+            
             return animeList;
         }
 
 
         /*Получение основной информации об аниме со страницы аниме с сайта AnimeGO:
          Rate, CountEpisode, Status, Genres, MpaaRate, Studios,Duration,NextEpisode,Dubbing,ImgHref*/
-        public MainAnimeData GetMainDataAnime(IDocument document)
+        public MainAnimeData? GetMainDataAnime(IDocument document)
         {
+            if (document.StatusCode != HttpStatusCode.OK)
+            {
+                return null;
+            }
+
             Dictionary<string, string?> dictionary = new Dictionary<string, string?>();
 
-            double? rate = null;
-            string? imgUrl = null;
+            string? href = (document.Head?
+                .QuerySelectorAll("link"))?
+                .FirstOrDefault(e => e.HasAttribute("rel") && e.GetAttribute("rel") == "canonical")?
+                .GetAttribute("href")?.Trim();
+            
+            int.TryParse(href?.Split("-")[^1], out int idFromAnimeGoResult);
 
-            if (document.StatusCode == HttpStatusCode.OK)
+            double.TryParse(document.QuerySelector(".rating-value")?.Text().Trim(), out double rateResult);
+            double? rate = rateResult == 0 ? null : rateResult;
+
+            var imgUrl = document.QuerySelector(".anime-poster")?.QuerySelector("img")?.GetAttribute("src")?.Trim();
+
+
+            if (document.QuerySelector(".anime-info")?.QuerySelectorAll("dt") is { } elements)
             {
-                double.TryParse(document.QuerySelector(".rating-value")?.Text().Trim(), out double rateResult);
-                rate = rateResult == 0 ? null : rateResult;
-
-                imgUrl = document.QuerySelector(".anime-poster")?.QuerySelector("img")?.GetAttribute("src")?.Trim();
-
-
-                if (document.QuerySelector(".anime-info")?.QuerySelectorAll("dt") is { } elements)
+                foreach (var e in elements)
                 {
-                    foreach (var e in elements)
-                    {
-                        dictionary.Add(e.Text().Trim(), e.NextElementSibling?.Text().Trim());
-                    }
+                    dictionary.Add(e.Text().Trim(), e.NextElementSibling?.Text().Trim());
                 }
             }
+            
 
             dictionary.TryGetValue("Эпизоды", out string? countEpisodeValue);
             int.TryParse(countEpisodeValue?.Split("/")[^1], out int countEpisodeResult);
@@ -89,6 +111,7 @@ namespace ParserAnimeGO
 
             return new MainAnimeData
             {
+                IdFromAnimeGo = idFromAnimeGoResult,
                 Rate = rate,
                 CountEpisode = countEpisode,
                 Status = status,
@@ -106,8 +129,12 @@ namespace ParserAnimeGO
 
         /*Получение  информации об просмотрах у одного аниме:
           Completed, Planned, Dropped, OnHold, Watching*/
-        public ShowAnimeData GetShowDataAnime(IDocument document)
+        public ShowAnimeData? GetShowDataAnime(IDocument document)
         {
+            if (document.StatusCode != HttpStatusCode.OK)
+            {
+                return null;
+            }
             Dictionary<string, string?> dictionary = new Dictionary<string, string?>();
             
             if (document.StatusCode == HttpStatusCode.OK)
@@ -153,8 +180,13 @@ namespace ParserAnimeGO
 
         /*Получение  информации об озвучках у одного аниме у одной серии:
           Dubbing*/
-        public DubbingAnimeData GetDubbingDataAnimeFromPlayerAsync(IDocument document)
+        public DubbingAnimeData? GetDubbingDataAnimeFromPlayerAsync(IDocument document)
         {
+            if (document.StatusCode != HttpStatusCode.OK)
+            {
+                return null;
+            }
+
             List<string> listDubbing = new List<string>();
             
             if (document.StatusCode == HttpStatusCode.OK)

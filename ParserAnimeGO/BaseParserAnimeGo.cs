@@ -1,5 +1,4 @@
-﻿using AngleSharp;
-using ParserAnimeGO.AnimeData;
+﻿using ParserAnimeGO.AnimeData;
 using ParserAnimeGO.Interface;
 
 namespace ParserAnimeGO
@@ -30,7 +29,7 @@ namespace ParserAnimeGO
             return _parserFromIDocument.GetPartialAnime(document);
         }
 
-        public async Task<MainAnimeData> GetMainAnimeDataByAnimeHrefGoAsync(string animeHref)
+        public async Task<MainAnimeData?> GetMainAnimeDataByAnimeHrefGoAsync(string animeHref)
         {
             using var requestMessage = _requestParserFactory.GetHtmlRequestMessage(new Uri(animeHref));
             using var document = await _requestParserHandler.SendHtmlRequestAsync(requestMessage);
@@ -38,27 +37,53 @@ namespace ParserAnimeGO
             return _parserFromIDocument.GetMainDataAnime(document);
         }
 
-        public async Task<ShowAnimeData> GetShowAnimeDataByIdFromAnimeGoAsync(int idFromAnimeGo)
+        public async Task<ShowAnimeData?> GetShowAnimeDataByIdFromAnimeGoAsync(int idFromAnimeGo)
         {
             using var requestMessage = _requestParserFactory.GetJsonRequestMessage(
                 _uriFactory.GetShowDataAnimeByIdFromAnimeGoUri(idFromAnimeGo));
             using var document = await _requestParserHandler.SendJsonRequestAsync(requestMessage);
 
-            return _parserFromIDocument.GetShowDataAnime(document);
+            var showAnimeData = _parserFromIDocument.GetShowDataAnime(document);
+
+            if (showAnimeData != null)
+            {
+                showAnimeData.IdFromAnimeGo = idFromAnimeGo;
+            }
+            
+
+            return showAnimeData;
         }
 
-        public async Task<DubbingAnimeData> GetDubbingAnimeDataByIdFromAnimeGoAsync(int idFromAnimeGo)
+        public async Task<DubbingAnimeData?> GetDubbingAnimeDataByIdFromAnimeGoAsync(int idFromAnimeGo)
         {
             using var requestMessage = _requestParserFactory.GetJsonRequestMessage(
                 _uriFactory.GetVoiceoverDataAnimeByIdFromAnimeGoUri(idFromAnimeGo));
             using var document = await _requestParserHandler.SendJsonRequestAsync(requestMessage);
 
-            return _parserFromIDocument.GetDubbingDataAnimeFromPlayerAsync(document);
+            var dubbingAnimeData = _parserFromIDocument.GetDubbingDataAnimeFromPlayerAsync(document);
+
+            if (dubbingAnimeData != null)
+            {
+                dubbingAnimeData.IdFromAnimeGo = idFromAnimeGo;
+            }
+            
+            return dubbingAnimeData;
         }
-        
+
+
         public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
         {
             _requestParserHandler.Dispose();
         }
+
+        
     }
+
+    
 }
