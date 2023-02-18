@@ -17,18 +17,6 @@ namespace ParserAnimeGO
             _httpClient = new HttpClient(); 
         }
 
-        private async Task<HttpResponseMessage> GetResponseWithoutTooManyRequests(HttpRequestMessage request)
-        {
-            await Task.Delay(TimeBetweenRequest);
-            HttpResponseMessage response = await _httpClient.SendAsync(request);
-            while (response.StatusCode == HttpStatusCode.TooManyRequests)
-            {
-                await Task.Delay(TimeBetweenRequest * 5);
-                response = await _httpClient.SendAsync(request);
-            }
-            return response;
-        }
-       
         public async Task<IDocument> SendHtmlRequestAsync(HttpRequestMessage request)
         {
             using var response = await GetResponseWithoutTooManyRequests(request);
@@ -53,6 +41,18 @@ namespace ParserAnimeGO
                 req.Content(html);
                 req.Status(response.StatusCode);
             });
+        }
+
+        private async Task<HttpResponseMessage> GetResponseWithoutTooManyRequests(HttpRequestMessage request)
+        {
+            await Task.Delay(TimeBetweenRequest);
+            HttpResponseMessage response = await _httpClient.SendAsync(request);
+            while (response.StatusCode == HttpStatusCode.TooManyRequests)
+            {
+                await Task.Delay(TimeBetweenRequest * 5);
+                response = await _httpClient.SendAsync(request);
+            }
+            return response;
         }
 
         public void Dispose()

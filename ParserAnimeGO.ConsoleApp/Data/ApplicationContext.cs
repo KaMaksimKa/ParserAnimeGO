@@ -1,4 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using ParserAnimeGO.AnimeData;
 using ParserAnimeGO.ConsoleApp.Data.AnimeModels;
 
@@ -25,15 +30,20 @@ namespace ParserAnimeGO.ConsoleApp.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Anime>().HasAlternateKey(u => u.IdFromAnimeGo);
+            /*modelBuilder.Entity<Anime>().HasIndex(a => a.IdFromAnimeGo).IsUnique();*/
+            /*modelBuilder.Entity<Genre>().HasIndex(g => g.Title).IsUnique();*/
             modelBuilder.Entity<Genre>().HasAlternateKey(u => u.Title);
-            modelBuilder.Entity<Studio>().HasAlternateKey(u => u.Title);
-            modelBuilder.Entity<Dubbing>().HasAlternateKey(u => u.Title);
-            modelBuilder.Entity<MpaaRate>().HasAlternateKey(u => u.Title);
-            modelBuilder.Entity<Status>().HasAlternateKey(u => u.Title);
-            modelBuilder.Entity<TypeAnime>().HasAlternateKey(u => u.Title);
-
+            /*modelBuilder.Entity<Dubbing>().HasIndex(g => g.Title).IsUnique();
+            modelBuilder.Entity<MpaaRate>().HasIndex(g => g.Title).IsUnique();
+            modelBuilder.Entity<Status>().HasIndex(g => g.Title).IsUnique();
+            modelBuilder.Entity<Studio>().HasIndex(g => g.Title).IsUnique();
+            modelBuilder.Entity<TypeAnime>().HasIndex(g => g.Title).IsUnique();*/
         }
 
+        public Task AddRangeAnime(AnimeFromParser animeFromParser)
+        {
+
+            return Task.CompletedTask;
+        }
     }
 }
