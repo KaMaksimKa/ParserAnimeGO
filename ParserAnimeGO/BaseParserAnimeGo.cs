@@ -1,5 +1,5 @@
-﻿using ParserAnimeGO.AnimeData;
-using ParserAnimeGO.Interface;
+﻿using ParserAnimeGO.Interface;
+using ParserAnimeGO.Models;
 
 namespace ParserAnimeGO
 {
@@ -23,7 +23,10 @@ namespace ParserAnimeGO
         public async Task<List<PartialAnimeData>> GetPartialAnimesDataByPageAsync(int numberOfPage)
         {
             using var requestMessage = _requestParserFactory
-                .GetHtmlRequestMessage(_uriFactory.GetAnimesByPageUri(numberOfPage));
+                .GetHtmlRequestMessage(_uriFactory.GetAnimes(new AnimesArgs()
+                {
+                    PageNumber = numberOfPage
+                }));
             using var document = await _requestParserHandler.SendHtmlRequestAsync(requestMessage);
             
             return _parserFromIDocument.GetPartialAnime(document);
@@ -40,7 +43,7 @@ namespace ParserAnimeGO
         public async Task<ShowAnimeData?> GetShowAnimeDataByIdFromAnimeGoAsync(int idFromAnimeGo)
         {
             using var requestMessage = _requestParserFactory.GetJsonRequestMessage(
-                _uriFactory.GetShowDataAnimeByIdFromAnimeGoUri(idFromAnimeGo));
+                _uriFactory.GetShowDataAnimeById(idFromAnimeGo));
             using var document = await _requestParserHandler.SendJsonRequestAsync(requestMessage);
 
             var showAnimeData = _parserFromIDocument.GetShowDataAnime(document);
@@ -57,7 +60,7 @@ namespace ParserAnimeGO
         public async Task<DubbingAnimeData?> GetDubbingAnimeDataByIdFromAnimeGoAsync(int idFromAnimeGo)
         {
             using var requestMessage = _requestParserFactory.GetJsonRequestMessage(
-                _uriFactory.GetVoiceoverDataAnimeByIdFromAnimeGoUri(idFromAnimeGo));
+                _uriFactory.GetVoiceoverDataAnimeById(idFromAnimeGo));
             using var document = await _requestParserHandler.SendJsonRequestAsync(requestMessage);
 
             var dubbingAnimeData = _parserFromIDocument.GetDubbingDataAnimeFromPlayerAsync(document);
@@ -70,6 +73,14 @@ namespace ParserAnimeGO
             return dubbingAnimeData;
         }
 
+        public async Task<List<AnimeNotificationFromParser>> GetAnimeNotificationsFromAnimeGoAsync()
+        {
+            var uri = _uriFactory.GetAnimeNotifications();
+            var request = _requestParserFactory.GetHtmlRequestMessage(uri);
+            var document = await _requestParserHandler.SendHtmlRequestAsync(request);
+
+            return _parserFromIDocument.GetAnimeNotificationsFromParserAsync(document);
+        }
 
         public void Dispose()
         {

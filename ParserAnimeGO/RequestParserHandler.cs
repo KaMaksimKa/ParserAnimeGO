@@ -2,6 +2,7 @@
 using AngleSharp;
 using AngleSharp.Dom;
 using Newtonsoft.Json.Linq;
+using ParserAnimeGO.Interface;
 
 namespace ParserAnimeGO
 {

@@ -1,4 +1,4 @@
-﻿namespace ParserAnimeGO.AnimeData
+﻿namespace ParserAnimeGO.Models
 {
     public class MainAnimeData
     {

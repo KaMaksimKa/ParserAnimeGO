@@ -1,6 +1,6 @@
 ﻿using AngleSharp.Dom;
 
-namespace ParserAnimeGO
+namespace ParserAnimeGO.Interface
 {
     public interface IRequestParserHandler:IDisposable
     {

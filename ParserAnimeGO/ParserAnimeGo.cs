@@ -1,5 +1,5 @@
-﻿using ParserAnimeGO.AnimeData;
-using ParserAnimeGO.Interface;
+﻿using ParserAnimeGO.Interface;
+using ParserAnimeGO.Models;
 
 namespace ParserAnimeGO
 {

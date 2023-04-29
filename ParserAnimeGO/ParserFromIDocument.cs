@@ -1,11 +1,11 @@
 ﻿using AngleSharp.Dom;
-using ParserAnimeGO.AnimeData;
 using ParserAnimeGO.Interface;
 using System.Net;
+using ParserAnimeGO.Models;
 
 namespace ParserAnimeGO
 {
-    public class AnimeParserFromIDocument: IAnimeParserFromIDocument
+    public class ParserFromIDocument: IAnimeParserFromIDocument
     {
         /*Получение частичной информации об аниме со страницы с несколькоми аниме с сайта AnimeGO:
           Href,IdFromAnimeGo,TitleEn,TitleRu,Description,Type,Year*/
@@ -126,7 +126,6 @@ namespace ParserAnimeGO
             
         }
         
-
         /*Получение  информации об просмотрах у одного аниме:
           Completed, Planned, Dropped, OnHold, Watching*/
         public ShowAnimeData? GetShowDataAnime(IDocument document)
@@ -177,7 +176,6 @@ namespace ParserAnimeGO
 
         }
 
-
         /*Получение  информации об озвучках у одного аниме у одной серии:
           Dubbing*/
         public DubbingAnimeData? GetDubbingDataAnimeFromPlayerAsync(IDocument document)
@@ -204,6 +202,47 @@ namespace ParserAnimeGO
             {
                 Dubbing = listDubbing
             };
+        }
+
+        public List<AnimeNotificationFromParser> GetAnimeNotificationsFromParserAsync(IDocument document)
+        {
+            var animeNotifications = new List<AnimeNotificationFromParser>();
+
+            if (document.StatusCode != HttpStatusCode.OK)
+            {
+                return animeNotifications;
+            }
+
+            var lastUpdateItems = document.GetElementsByClassName("last-update").FirstOrDefault()
+                    ?.GetElementsByClassName("last-update-item");
+            if (lastUpdateItems == null)
+            {
+                return animeNotifications;
+            }
+
+            foreach (var lastUpdateItem in lastUpdateItems)
+            {
+                var titleRu = lastUpdateItem.GetElementsByClassName("last-update-title")
+                    .FirstOrDefault()?.Text().Trim();
+                var dubbing = lastUpdateItem.GetElementsByClassName("text-gray-dark-6")
+                    .FirstOrDefault()?.Text().Trim();
+                var href = lastUpdateItem.GetAttribute("onclick")?.Replace("location.href=","")
+                    .Trim('\'');
+                int.TryParse(lastUpdateItem.GetElementsByClassName("font-weight-600").FirstOrDefault()?.Text(),
+                    out var serialNumber);
+
+                href = href != null ? "https://animego.org" + href : null;
+                
+                animeNotifications.Add(new AnimeNotificationFromParser()
+                {
+                    TitleRu = titleRu,
+                    Dubbing = dubbing,
+                    Href = href,
+                    SerialNumber = serialNumber == 0 ? null : serialNumber
+                });
+            }
+
+            return animeNotifications;
         }
     }
 }
