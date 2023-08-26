@@ -3,7 +3,7 @@ using ParserAnimeGO.Models;
 
 namespace ParserAnimeGO
 {
-    public class BaseParserAnimeGo:IDisposable
+    public class BaseParserAnimeGo : IDisposable
     {
         private readonly IRequestParserHandler _requestParserHandler;
         private readonly IRequestParserFactory _requestParserFactory;
@@ -20,6 +20,11 @@ namespace ParserAnimeGO
             _uriFactory = uriFactory;
         }
 
+        /// <summary>
+        /// Получить поверхностную информацию со страниц с аниме
+        /// </summary>
+        /// <param name="numberOfPage"></param>
+        /// <returns></returns>
         public async Task<List<PartialAnimeData>> GetPartialAnimesDataByPageAsync(int numberOfPage)
         {
             using var requestMessage = _requestParserFactory
@@ -28,10 +33,15 @@ namespace ParserAnimeGO
                     PageNumber = numberOfPage
                 }));
             using var document = await _requestParserHandler.SendHtmlRequestAsync(requestMessage);
-            
+
             return _parserFromIDocument.GetPartialAnime(document);
         }
 
+        /// <summary>
+        /// Получить подробную информацию об отдельном аниме
+        /// </summary>
+        /// <param name="animeHref"></param>
+        /// <returns></returns>
         public async Task<MainAnimeData?> GetMainAnimeDataByAnimeHrefGoAsync(string animeHref)
         {
             using var requestMessage = _requestParserFactory.GetHtmlRequestMessage(new Uri(animeHref));
@@ -40,7 +50,12 @@ namespace ParserAnimeGO
             return _parserFromIDocument.GetMainDataAnime(document);
         }
 
-        public async Task<ShowAnimeData?> GetShowAnimeDataByIdFromAnimeGoAsync(int idFromAnimeGo)
+        /// <summary>
+        /// Получить информацию о просмотрах об отдельном аниме
+        /// </summary>
+        /// <param name="idFromAnimeGo"></param>
+        /// <returns></returns>
+        public async Task<ShowAnimeData?> GetShowAnimeDataByIdFromAnimeGoAsync(long idFromAnimeGo)
         {
             using var requestMessage = _requestParserFactory.GetJsonRequestMessage(
                 _uriFactory.GetShowDataAnimeById(idFromAnimeGo));
@@ -52,12 +67,17 @@ namespace ParserAnimeGO
             {
                 showAnimeData.IdFromAnimeGo = idFromAnimeGo;
             }
-            
+
 
             return showAnimeData;
         }
 
-        public async Task<DubbingAnimeData?> GetDubbingAnimeDataByIdFromAnimeGoAsync(int idFromAnimeGo)
+        /// <summary>
+        /// Получить информацию о озвучке на первой серии отдельного аниме
+        /// </summary>
+        /// <param name="idFromAnimeGo"></param>
+        /// <returns></returns>
+        public async Task<DubbingAnimeData?> GetDubbingAnimeDataByIdFromAnimeGoAsync(long idFromAnimeGo)
         {
             using var requestMessage = _requestParserFactory.GetJsonRequestMessage(
                 _uriFactory.GetVoiceoverDataAnimeById(idFromAnimeGo));
@@ -69,10 +89,14 @@ namespace ParserAnimeGO
             {
                 dubbingAnimeData.IdFromAnimeGo = idFromAnimeGo;
             }
-            
+
             return dubbingAnimeData;
         }
 
+        /// <summary>
+        /// Получить информацию об выходе новых серий
+        /// </summary>
+        /// <returns></returns>
         public async Task<List<AnimeNotificationFromParser>> GetAnimeNotificationsFromAnimeGoAsync()
         {
             var uri = _uriFactory.GetAnimeNotifications();
@@ -80,6 +104,22 @@ namespace ParserAnimeGO
             var document = await _requestParserHandler.SendHtmlRequestAsync(request);
 
             return _parserFromIDocument.GetAnimeNotificationsFromParserAsync(document);
+        }
+
+        /// <summary>
+        /// Получить комментарии по аниме
+        /// </summary>
+        /// <param name="idForComment"></param>
+        /// <param name="numberOfPage"></param>
+        /// <param name="limit"></param>
+        /// <returns></returns>
+        public async Task<List<AnimeComment>> GetAnimeCommentsAsync(int idForComment, int numberOfPage = 1, int limit = 20)
+        {
+            var uri = _uriFactory.GetAnimeComments(idForComment,numberOfPage,limit);
+            var request = _requestParserFactory.GetJsonRequestMessage(uri);
+            var document = await _requestParserHandler.SendJsonRequestAsync(request);
+
+            return _parserFromIDocument.GetAnimeComments(document);
         }
 
         public void Dispose()
@@ -93,8 +133,8 @@ namespace ParserAnimeGO
             _requestParserHandler.Dispose();
         }
 
-        
+
     }
 
-    
+
 }

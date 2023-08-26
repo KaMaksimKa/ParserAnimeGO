@@ -5,9 +5,10 @@ namespace ParserAnimeGO.Interface
     public interface IAnimeGoUriFactory
     {
         public Uri GetAnimes(AnimesArgs animeArgs);
-        public Uri GetShowDataAnimeById(int idFromAnimeGo);
-        public Uri GetVoiceoverDataAnimeById(int idFromAnimeGo);
+        public Uri GetShowDataAnimeById(long idFromAnimeGo);
+        public Uri GetVoiceoverDataAnimeById(long idFromAnimeGo);
         public Uri GetAnimeNotifications();
+        public Uri GetAnimeComments(long idForComments, int numberOfPage, int limit);
 
     }
 

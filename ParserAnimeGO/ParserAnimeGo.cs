@@ -59,33 +59,34 @@ namespace ParserAnimeGO
                     animesFromParser.Add(anime);
                 }
             }
-            
-            await Parallel.ForEachAsync(animesFromParser, async (anime,_) =>
+
+            foreach (var anime in animesFromParser)
+            {
+                if (anime.Href is { } animeHref
+                    && await GetMainAnimeDataByAnimeHrefGoAsync(animeHref) is { } mainAnimeData)
                 {
-                    if (anime.Href is {} animeHref 
-                        && await GetMainAnimeDataByAnimeHrefGoAsync(animeHref) is { } mainAnimeData)
+                    anime.UpdateWithMainAnimeData(mainAnimeData);
+                }
+
+                if (anime.IdFromAnimeGo is { } idFromAnimeGo)
+                {
+                    if (await GetShowAnimeDataByIdFromAnimeGoAsync(idFromAnimeGo) is { } showAnimeData)
                     {
-                        anime.UpdateWithMainAnimeData(mainAnimeData);
+                        anime.UpdateWithShowAnimeData(showAnimeData);
                     }
 
-                    if (anime.IdFromAnimeGo is {} idFromAnimeGo)
+                    if (await GetDubbingAnimeDataByIdFromAnimeGoAsync(idFromAnimeGo) is { } dubbingAnimeData)
                     {
-                        if (await GetShowAnimeDataByIdFromAnimeGoAsync(idFromAnimeGo) is { } showAnimeData)
-                        {
-                            anime.UpdateWithShowAnimeData(showAnimeData);
-                        }
-
-                        if (await GetDubbingAnimeDataByIdFromAnimeGoAsync(idFromAnimeGo) is { } dubbingAnimeData)
-                        {
-                            anime.UpdateWithDubbingAnimeData(dubbingAnimeData);
-                        }
+                        anime.UpdateWithDubbingAnimeData(dubbingAnimeData);
                     }
-                });
+                }
+            }
+
 
             return animesFromParser;
         }
 
-        public async Task<List<PartialAnimeData>> GetPartialAnimeDataRangeAsync(List<int> idFromAnimeGoList)
+        public async Task<List<PartialAnimeData>> GetPartialAnimeDataRangeAsync(List<long> idFromAnimeGoList)
         {
             List<PartialAnimeData> partialAnimesData = new List<PartialAnimeData>();
 
@@ -101,13 +102,11 @@ namespace ParserAnimeGO
                 i++;
             }
 
-            return partialAnimesData.Where(d => idFromAnimeGoList.Contains(d.IdFromAnimeGo)).ToList();
+            return partialAnimesData.Where(x =>x.IdFromAnimeGo.HasValue && idFromAnimeGoList.Contains(x.IdFromAnimeGo.Value)).ToList();
         }
 
-        public async Task<List<MainAnimeData>> GetMainAnimeDataRangeAsync(List<int> idFromAnimeGoList)
+        public async Task<List<MainAnimeData>> GetMainAnimeDataRangeAsync(List<long> idFromAnimeGoList)
         {
-            List<MainAnimeData> mainAnimesData = new List<MainAnimeData>();
-
             var partialAnimesData = await GetPartialAnimeDataRangeAsync(idFromAnimeGoList);
 
             var hrefList = new List<string>();

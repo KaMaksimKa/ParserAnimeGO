@@ -1,14 +1,18 @@
-﻿using System.Text;
-using ParserAnimeGO.Constants;
-using ParserAnimeGO.Interface;
+﻿using ParserAnimeGO.Interface;
 using ParserAnimeGO.Models;
+using System.Text;
 
 namespace ParserAnimeGO
 {
-    public class AnimeGoUriFactory: IAnimeGoUriFactory
+    public class AnimeGoUriFactory : IAnimeGoUriFactory
     {
-        private static readonly Uri _baseUri = new Uri("https://animego.org");
+        private static readonly Uri BaseUri = new Uri("https://animego.org");
 
+        /// <summary>
+        /// Получить url до страницы со всеми аниме
+        /// </summary>
+        /// <param name="animeArgs"></param>
+        /// <returns></returns>
         public Uri GetAnimes(AnimesArgs animeArgs)
         {
             var url = new StringBuilder("anime");
@@ -51,11 +55,9 @@ namespace ParserAnimeGO
                             url.Append($"-{filter.LogicalOperator}-{value}");
                         }
                     }
-                    type -is -tv - or - movie
                 }
 
             }
-
 
 
             if (animeArgs.PageNumber != null || animeArgs.Sort != null || animeArgs.Direction != null)
@@ -77,24 +79,48 @@ namespace ParserAnimeGO
                     url.Append($"direction={animeArgs.Direction}&");
                 }
             }
-            return new Uri(_baseUri, url.ToString());
+            return new Uri(BaseUri, url.ToString());
         }
 
-        public Uri GetShowDataAnimeById(int idFromAnimeGo)
+        /// <summary>
+        /// Получить url до информации о списках у пользователей для аниме
+        /// </summary>
+        /// <param name="idFromAnimeGo"></param>
+        /// <returns></returns>
+        public Uri GetShowDataAnimeById(long idFromAnimeGo)
         {
-            string url = $"https://animego.org/animelist/{idFromAnimeGo}/show";
-            return new Uri(url);
+            return new Uri(BaseUri, $"animelist/{idFromAnimeGo}/show");
         }
 
-        public Uri GetVoiceoverDataAnimeById(int idFromAnimeGo)
+        /// <summary>
+        /// Получить url до информации о озвучке у первой серии аниме
+        /// </summary>
+        /// <param name="idFromAnimeGo"></param>
+        /// <returns></returns>
+        public Uri GetVoiceoverDataAnimeById(long idFromAnimeGo)
         {
-            string url = $"https://animego.org/anime/{idFromAnimeGo}/player?_allow=true";
-            return new Uri(url);
+            return new Uri(BaseUri, $"anime/{idFromAnimeGo}/player?_allow=true");
         }
 
+        /// <summary>
+        /// Получить url до страницы с информацией о выходе новых серий
+        /// </summary>
+        /// <returns></returns>
         public Uri GetAnimeNotifications()
         {
-            return new Uri("https://animego.org");
+            return BaseUri;
+        }
+
+        /// <summary>
+        /// Получить комментарии по отдельному аниме
+        /// </summary>
+        /// <param name="idForComments"></param>
+        /// <param name="numberOfPage"></param>
+        /// <param name="limit"></param>
+        /// <returns></returns>
+        public Uri GetAnimeComments(long idForComments, int numberOfPage, int limit)
+        {
+            return new Uri(BaseUri, $"comment/{idForComments}/1/show?view=list&page={numberOfPage}&limit={limit}");
         }
 
     }

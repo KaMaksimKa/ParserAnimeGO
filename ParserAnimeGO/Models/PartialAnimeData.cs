@@ -2,7 +2,7 @@
 {
     public class PartialAnimeData
     {
-        public int IdFromAnimeGo { get; set; }
+        public long? IdFromAnimeGo { get; set; }
         public string? TitleEn { get; set; }
         public string? TitleRu { get; set; }
         public string? Type { get; set; }

@@ -2,7 +2,7 @@
 {
     public class MainAnimeData
     {
-        public int? IdFromAnimeGo { get; set; }
+        public long? IdFromAnimeGo { get; set; }
         public string? TitleEn { get; set; }
         public string? TitleRu { get; set; }
         public string? Description { get; set; }
@@ -22,5 +22,6 @@
         public List<string> Dubbing { get; set; } = new List<string>();
         public string? ShotByRanobe { get; set; }
         public string? ImgHref { get; set; }
+        public long? IdForComments { get; set; }
     }
 }

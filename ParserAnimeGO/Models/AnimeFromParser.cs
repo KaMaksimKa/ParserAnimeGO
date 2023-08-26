@@ -2,7 +2,7 @@
 {
     public class AnimeFromParser
     {
-        public int IdFromAnimeGo { get; set; }
+        public long? IdFromAnimeGo { get; set; }
         public string? TitleEn { get; set; }
         public string? TitleRu { get; set; }
         public string? Type { get; set; }
@@ -21,9 +21,11 @@
         public string? ImgHref { get; set; }
         public string? NextEpisode { get; set; }
         public string? Duration { get; set; }
+        public long? IdForComments { get; set; }
         public List<string> Studios { get; set; } = new List<string>();
         public List<string> Genres { get; set; } = new List<string>();
         public List<string> Dubbing { get; set; } = new List<string>();
+        public List<string> DubbingFromFirstEpisode { get; set; } = new List<string>();
 
         public void UpdateWithDubbingPartialAnimeData(PartialAnimeData partialAnimeData)
         {
@@ -44,6 +46,7 @@
             Studios = mainAnimeData.Studios;
             Genres = mainAnimeData.Genres;
             Dubbing = mainAnimeData.Dubbing.ToList();
+            IdForComments = mainAnimeData.IdForComments;
 
         }
         public void UpdateWithShowAnimeData(ShowAnimeData showAnimeData)
@@ -56,7 +59,7 @@
         }
         public void UpdateWithDubbingAnimeData(DubbingAnimeData dubbingAnimeData)
         {
-            Dubbing = Dubbing.Union(dubbingAnimeData.Dubbing).ToList();
+            DubbingFromFirstEpisode = dubbingAnimeData.Dubbing;
         }
 
 
@@ -91,7 +94,7 @@
         };
         public DubbingAnimeData ToDubbingAnimeData() => new DubbingAnimeData
         {
-            Dubbing = Dubbing
+            Dubbing = DubbingFromFirstEpisode
         };
    
     }
