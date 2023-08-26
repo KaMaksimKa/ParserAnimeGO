@@ -120,7 +120,7 @@ namespace ParserAnimeGO
             return await GetMainAnimeDataRangeAsync(hrefList);
         }
 
-        public async Task<List<ShowAnimeData>> GetShowAnimeDataRangeAsync(List<int> idFromAnimeGoList)
+        public async Task<List<ShowAnimeData>> GetShowAnimeDataRangeAsync(List<long> idFromAnimeGoList)
         {
             List<ShowAnimeData> showAnimesData = new List<ShowAnimeData>();
 
@@ -135,7 +135,7 @@ namespace ParserAnimeGO
             return showAnimesData;
         }
 
-        public async Task<List<DubbingAnimeData>> GetDubbingAnimeDataRangeAsync(List<int> idFromAnimeGoList)
+        public async Task<List<DubbingAnimeData>> GetDubbingAnimeDataRangeAsync(List<long> idFromAnimeGoList)
         {
             List<DubbingAnimeData> dubbingAnimesData = new List<DubbingAnimeData>();
 
