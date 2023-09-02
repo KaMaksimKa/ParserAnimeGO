@@ -20,18 +20,16 @@ namespace ParserAnimeGO
             _uriFactory = uriFactory;
         }
 
+
         /// <summary>
         /// Получить поверхностную информацию со страниц с аниме
         /// </summary>
-        /// <param name="numberOfPage"></param>
+        /// <param name="animesArgs"></param>
         /// <returns></returns>
-        public async Task<List<PartialAnimeData>> GetPartialAnimesDataByPageAsync(int numberOfPage)
+        public async Task<List<PartialAnimeData>> GetPartialAnimesDataByArgsAsync(AnimesArgs animesArgs)
         {
             using var requestMessage = _requestParserFactory
-                .GetHtmlRequestMessage(_uriFactory.GetAnimes(new AnimesArgs()
-                {
-                    PageNumber = numberOfPage
-                }));
+                .GetHtmlRequestMessage(_uriFactory.GetAnimes(animesArgs));
             using var document = await _requestParserHandler.SendHtmlRequestAsync(requestMessage);
 
             return _parserFromIDocument.GetPartialAnime(document);
@@ -109,17 +107,28 @@ namespace ParserAnimeGO
         /// <summary>
         /// Получить комментарии по аниме
         /// </summary>
-        /// <param name="idForComment"></param>
+        /// <param name="idForComments"></param>
         /// <param name="numberOfPage"></param>
         /// <param name="limit"></param>
         /// <returns></returns>
-        public async Task<List<AnimeComment>> GetAnimeCommentsAsync(int idForComment, int numberOfPage = 1, int limit = 20)
+        public async Task<List<AnimeCommentFromParser>> GetAnimeCommentsAsync(long idForComments, int numberOfPage = 1, int limit = 20)
         {
-            var uri = _uriFactory.GetAnimeComments(idForComment,numberOfPage,limit);
+            var uri = _uriFactory.GetAnimeComments(idForComments, numberOfPage,limit);
             var request = _requestParserFactory.GetJsonRequestMessage(uri);
             var document = await _requestParserHandler.SendJsonRequestAsync(request);
 
             return _parserFromIDocument.GetAnimeComments(document);
+        }
+
+        /// <summary>
+        /// Получить фото по аниме
+        /// </summary>
+        /// <param name="imgHref"></param>
+        /// <returns></returns>
+        public Task<Stream> GetAnimeImageAsync(string imgHref)
+        {
+            var request = _requestParserFactory.GetImageRequestMessage(new Uri(imgHref));
+            return _requestParserHandler.SendImageRequestAsync(request);
         }
 
         public void Dispose()

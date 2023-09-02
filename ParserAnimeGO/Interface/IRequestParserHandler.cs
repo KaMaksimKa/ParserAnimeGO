@@ -6,5 +6,6 @@ namespace ParserAnimeGO.Interface
     {
         public Task<IDocument> SendHtmlRequestAsync(HttpRequestMessage request);
         public Task<IDocument> SendJsonRequestAsync(HttpRequestMessage request);
+        public Task<Stream> SendImageRequestAsync(HttpRequestMessage request);
     }
 }

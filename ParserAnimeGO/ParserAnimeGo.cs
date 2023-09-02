@@ -3,59 +3,65 @@ using ParserAnimeGO.Models;
 
 namespace ParserAnimeGO
 {
-    public class ParserAnimeGo:BaseParserAnimeGo
+    public class ParserAnimeGo : BaseParserAnimeGo
     {
         private const int NumberOfFirstPage = 1;
+
         public ParserAnimeGo(IRequestParserHandler requestParserHandler,
             IRequestParserFactory requestParserFactory,
             IAnimeParserFromIDocument parserFromIDocument,
             IAnimeGoUriFactory uriFactory) : base(requestParserHandler, requestParserFactory, parserFromIDocument, uriFactory)
         {
-            
+
         }
 
-        public async Task<List<AnimeFromParser>> GetFullAnimesFromAllPagesAsync()
+        public async Task<List<AnimeFromParser>> GetFullAnimesFromAllPagesAsync(AnimesArgs? animesArgs = null)
         {
             List<AnimeFromParser> animesFromParser = new List<AnimeFromParser>();
 
-            int i = NumberOfFirstPage;
+            animesArgs ??= new AnimesArgs();
+            int numberOfPage = NumberOfFirstPage;
             while (true)
             {
-                var animes = await GetFullAnimesByPageAsync(i);
+                animesArgs.PageNumber = numberOfPage;
+                var animes = await GetFullAnimesByArgsAsync(animesArgs);
                 if (animes.Count == 0)
                 {
                     break;
                 }
                 animesFromParser.AddRange(animes);
-                i++;
+                numberOfPage++;
             }
-            
+
 
             return animesFromParser;
         }
 
-        public async Task<List<AnimeFromParser>> GetFullAnimesFromPageRangeAsync(int numberOfPage,int count)
+        public async Task<List<AnimeFromParser>> GetFullAnimesFromPageRangeAsync(int start, int count, AnimesArgs? animesArgs = null)
         {
             List<AnimeFromParser> animesFromParser = new List<AnimeFromParser>();
 
-            for (int i = numberOfPage; i < numberOfPage+count; i++)
+            animesArgs ??= new AnimesArgs();
+            for (int numberOfPage = start; numberOfPage < start + count; numberOfPage++)
             {
-                animesFromParser.AddRange(await GetFullAnimesByPageAsync(i));
+                animesArgs.PageNumber = numberOfPage;
+                animesFromParser.AddRange(await GetFullAnimesByArgsAsync(animesArgs));
             }
 
             return animesFromParser;
         }
 
-        public async Task<List<AnimeFromParser>> GetFullAnimesByPageAsync(int numberOfPage)
+        public async Task<List<AnimeFromParser>> GetFullAnimesByArgsAsync(AnimesArgs animesArgs)
         {
-            List<PartialAnimeData> partialAnimesData = await GetPartialAnimesDataByPageAsync(numberOfPage);
+            List<PartialAnimeData> partialAnimesData = await GetPartialAnimesDataByArgsAsync(animesArgs);
+
             List<AnimeFromParser> animesFromParser = new List<AnimeFromParser>();
             foreach (var animeData in partialAnimesData)
             {
-                if (animeData.IdFromAnimeGo is {} idFromAnimeGo)
+                if (animeData.IdFromAnimeGo is { } idFromAnimeGo)
                 {
                     var anime = new AnimeFromParser { IdFromAnimeGo = idFromAnimeGo };
-                    anime.UpdateWithDubbingPartialAnimeData(animeData);
+                    anime.UpdateWithPartialAnimeData(animeData);
                     animesFromParser.Add(anime);
                 }
             }
@@ -90,34 +96,39 @@ namespace ParserAnimeGO
         {
             List<PartialAnimeData> partialAnimesData = new List<PartialAnimeData>();
 
-            int i = NumberOfFirstPage;
+            int numberOfPage = NumberOfFirstPage;
             while (true)
             {
-                var partialAnimeData = await GetPartialAnimesDataByPageAsync(i);
+                var partialAnimeData = await GetPartialAnimesDataByArgsAsync(new AnimesArgs()
+                {
+                    PageNumber = numberOfPage
+                });
+
                 if (partialAnimeData.Count == 0)
                 {
                     break;
                 }
                 partialAnimesData.AddRange(partialAnimeData);
-                i++;
+                numberOfPage++;
             }
 
-            return partialAnimesData.Where(x =>x.IdFromAnimeGo.HasValue && idFromAnimeGoList.Contains(x.IdFromAnimeGo.Value)).ToList();
+            return partialAnimesData.Where(x => x.IdFromAnimeGo.HasValue && idFromAnimeGoList.Contains(x.IdFromAnimeGo.Value)).ToList();
         }
 
         public async Task<List<MainAnimeData>> GetMainAnimeDataRangeAsync(List<long> idFromAnimeGoList)
         {
-            var partialAnimesData = await GetPartialAnimeDataRangeAsync(idFromAnimeGoList);
 
-            var hrefList = new List<string>();
+            var partialAnimesData = await GetPartialAnimeDataRangeAsync(idFromAnimeGoList);
+            var mainAnimesData = new List<MainAnimeData>();
             foreach (var partialAnimeData in partialAnimesData)
             {
-                if (partialAnimeData.Href is { } href)
+                if (partialAnimeData.Href is { } href
+                    && await GetMainAnimeDataByAnimeHrefGoAsync(href) is { } mainAnimeData)
                 {
-                    hrefList.Add(href);
+                    mainAnimesData.Add(mainAnimeData);
                 }
             }
-            return await GetMainAnimeDataRangeAsync(hrefList);
+            return mainAnimesData;
         }
 
         public async Task<List<ShowAnimeData>> GetShowAnimeDataRangeAsync(List<long> idFromAnimeGoList)
@@ -150,19 +161,20 @@ namespace ParserAnimeGO
             return dubbingAnimesData;
         }
 
-        private async Task<List<MainAnimeData>> GetMainAnimeDataRangeAsync(List<string> hrefList)
+        public async Task<List<AnimeCommentFromParser>> GetAllCommentsFromAnime(long idForComments,int numberOfCommentsPerRequest = 20)
         {
-            List<MainAnimeData> mainAnimesData = new List<MainAnimeData>();
+            var comments = new List<AnimeCommentFromParser>();
 
-            foreach (var href in hrefList)
+            List<AnimeCommentFromParser> commentsByAnime;
+            var numberOfPage = NumberOfFirstPage;
+            do
             {
-                if (await GetMainAnimeDataByAnimeHrefGoAsync(href) is { } mainAnimeData)
-                {
-                    mainAnimesData.Add(mainAnimeData);
-                }
-            }
+                commentsByAnime = await GetAnimeCommentsAsync(idForComments, numberOfPage, numberOfCommentsPerRequest);
+                comments.AddRange(commentsByAnime);
+                numberOfPage++;
+            } while (commentsByAnime.Any());
 
-            return mainAnimesData;
+            return comments;
         }
     }
 }

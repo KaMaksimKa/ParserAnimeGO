@@ -2,6 +2,7 @@
 using ParserAnimeGO.Interface;
 using ParserAnimeGO.Models;
 using System.Net;
+using AngleSharp;
 
 namespace ParserAnimeGO
 {
@@ -17,43 +18,46 @@ namespace ParserAnimeGO
         {
             List<PartialAnimeData> animeList = new List<PartialAnimeData>();
 
-            if (document.StatusCode == HttpStatusCode.OK)
+            if (document.StatusCode != HttpStatusCode.OK)
             {
-                foreach (var e in document.QuerySelectorAll(".animes-list-item"))
-                {
-                    string? href = e.QuerySelector(".h5")?.QuerySelector("a")?.GetAttribute("href")?.Trim();
-                    long.TryParse(href?.Split("-")[^1], out var idFromAnimeGoResult);
-                    long? idFromAnimeGo = idFromAnimeGoResult == 0 ? null : idFromAnimeGoResult;
-
-                    var nameRu = e.QuerySelector(".h5")?.Text().Trim();
-
-                    var nameEn = e.QuerySelector(".text-gray-dark-6 ")?.Text().Trim();
-
-                    var type = e.QuerySelector("span")?.QuerySelector("a")?.Text().Trim();
-
-                    int.TryParse(e.QuerySelector(".anime-year")?.QuerySelector("a")?.Text().Trim(), out int yearResult);
-                    int? year = yearResult == 0 ? null : yearResult;
-
-                    var description = e.QuerySelector(".description")?.Text().Trim();
-
-                    if (idFromAnimeGo != null)
-                    {
-                        animeList.Add(new PartialAnimeData
-                        {
-                            Href = href,
-                            IdFromAnimeGo = idFromAnimeGo.Value,
-                            TitleEn = nameEn,
-                            TitleRu = nameRu,
-                            Description = description,
-                            Type = type,
-                            Year = year,
-                        });
-                    }
-
-                }
+                return animeList;
             }
-            
-            return animeList;
+           
+            foreach (var e in document.QuerySelectorAll(".animes-list-item"))
+            {
+                string? href = e.QuerySelector(".h5")?.QuerySelector("a")?.GetAttribute("href")?.Trim();
+                long.TryParse(href?.Split("-")[^1], out var idFromAnimeGoResult);
+                long? idFromAnimeGo = idFromAnimeGoResult == 0 ? null : idFromAnimeGoResult;
+
+                var nameRu = e.QuerySelector(".h5 a")?.Text().Trim();
+
+                var nameEn = e.QuerySelector(".text-gray-dark-6 ")?.Text().Trim();
+
+                var type = e.QuerySelector("span")?.QuerySelector("a")?.Text().Trim();
+
+                int.TryParse(e.QuerySelector(".anime-year")?.QuerySelector("a")?.Text().Trim(), out int yearResult);
+                int? year = yearResult == 0 ? null : yearResult;
+
+                var description = e.QuerySelector(".description")?.Text().Trim();
+
+                if (idFromAnimeGo != null)
+                {
+                    animeList.Add(new PartialAnimeData
+                    {
+                        Href = href,
+                        IdFromAnimeGo = idFromAnimeGo.Value,
+                        TitleEn = nameEn,
+                        TitleRu = nameRu,
+                        Description = description,
+                        Type = type,
+                        Year = year,
+                    });
+                }
+
+            }
+        
+        
+        return animeList;
         }
 
         /// <summary>
@@ -254,7 +258,7 @@ namespace ParserAnimeGO
 
                 var textRight = lastUpdateItem.GetElementsByClassName("text-right").FirstOrDefault();
                 var dubbing = textRight?.GetElementsByClassName("text-gray-dark-6")
-                    .FirstOrDefault()?.Text().Trim();
+                    .FirstOrDefault()?.Text().Trim('(', ')', ' ');
 
                 int.TryParse(textRight?.GetElementsByClassName("font-weight-600").FirstOrDefault()?.Text().Split().FirstOrDefault(),
                     out var serialNumber);
@@ -282,11 +286,22 @@ namespace ParserAnimeGO
         /// </summary>
         /// <param name="document"></param>
         /// <returns></returns>
-        public List<AnimeComment> GetAnimeComments(IDocument document)
+        public List<AnimeCommentFromParser> GetAnimeComments(IDocument document)
         {
-            var animeComments = new List<AnimeComment>();
+            var animeComments = new List<AnimeCommentFromParser>();
 
-            var comments = document.QuerySelectorAll(".comment");
+
+            
+
+            if (document.StatusCode != HttpStatusCode.OK)
+            {
+                return animeComments;
+            }
+
+            var comments = document.QuerySelectorAll(".comment")
+                .Except(document.QuerySelectorAll(".children .comment"))
+                .ToCollection();
+
             foreach (var comment in comments)
             {
                 var animeComment = GetAnimeComment(comment);
@@ -305,16 +320,16 @@ namespace ParserAnimeGO
             return animeComments;
         }
 
-        private AnimeComment GetAnimeComment(IElement comment)
+        private AnimeCommentFromParser GetAnimeComment(IElement comment)
         {
             long.TryParse(comment.GetAttribute("data-id"), out var commentId);
             var authorName = comment.QuerySelector(".comment-author .text-truncate a")?.GetAttribute("title");
             var commentText = comment.QuerySelector(".comment-text div")?.TextContent.Trim();
             int.TryParse(comment.QuerySelector(".comment-actions .d-inline-flex .mr-3")?.TextContent, out var score);
-            DateTime.TryParse(comment.QuerySelector(".comment-author .time time")?.GetAttribute("datetime"),
+            DateTimeOffset.TryParse(comment.QuerySelector(".comment-author .time time")?.GetAttribute("datetime"),
                 out var createdDate);
 
-            return new AnimeComment()
+            return new AnimeCommentFromParser()
             {
                 CommentId = commentId,
                 Comment = commentText,
