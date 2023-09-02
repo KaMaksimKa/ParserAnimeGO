@@ -47,7 +47,9 @@ namespace ParserAnimeGO
         public async Task<Stream> SendImageRequestAsync(HttpRequestMessage request)
         {
             using var response = await GetResponseWithoutTooManyRequests(request);
-            return await response.Content.ReadAsStreamAsync();
+            var stream = new MemoryStream();
+            await (await response.Content.ReadAsStreamAsync()).CopyToAsync(stream);
+            return stream;
         }
 
         private async Task<HttpResponseMessage> GetResponseWithoutTooManyRequests(HttpRequestMessage request)

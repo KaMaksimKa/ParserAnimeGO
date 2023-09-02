@@ -125,10 +125,10 @@ namespace ParserAnimeGO
         /// </summary>
         /// <param name="imgHref"></param>
         /// <returns></returns>
-        public Task<Stream> GetAnimeImageAsync(string imgHref)
+        public async Task<Stream> GetAnimeImageAsync(string imgHref)
         {
             var request = _requestParserFactory.GetImageRequestMessage(new Uri(imgHref));
-            return _requestParserHandler.SendImageRequestAsync(request);
+            return await _requestParserHandler.SendImageRequestAsync(request);
         }
 
         public void Dispose()
