@@ -42,7 +42,7 @@
             Status = mainAnimeData.Status;
             CountEpisode = mainAnimeData.CountEpisode;
             MpaaRate = mainAnimeData.MpaaRate;
-            ImgHref = mainAnimeData.ImgHref;
+            ImgHref = mainAnimeData.ImgIdFromAnimeGo;
             NextEpisode = mainAnimeData.NextEpisode;
             Studios = mainAnimeData.Studios;
             Duration = mainAnimeData.Duration;
@@ -81,7 +81,7 @@
             Status = Status,
             CountEpisode = CountEpisode,
             MpaaRate = MpaaRate,
-            ImgHref = ImgHref,
+            ImgIdFromAnimeGo = ImgHref,
             Duration = Duration,
             NextEpisode = NextEpisode,
             Studios = Studios,

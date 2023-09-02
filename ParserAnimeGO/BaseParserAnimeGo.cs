@@ -56,7 +56,7 @@ namespace ParserAnimeGO
         public async Task<ShowAnimeData?> GetShowAnimeDataByIdFromAnimeGoAsync(long idFromAnimeGo)
         {
             using var requestMessage = _requestParserFactory.GetJsonRequestMessage(
-                _uriFactory.GetShowDataAnimeById(idFromAnimeGo));
+                _uriFactory.GetShowDataAnime(idFromAnimeGo));
             using var document = await _requestParserHandler.SendJsonRequestAsync(requestMessage);
 
             var showAnimeData = _parserFromIDocument.GetShowDataAnime(document);
@@ -78,7 +78,7 @@ namespace ParserAnimeGO
         public async Task<DubbingAnimeData?> GetDubbingAnimeDataByIdFromAnimeGoAsync(long idFromAnimeGo)
         {
             using var requestMessage = _requestParserFactory.GetJsonRequestMessage(
-                _uriFactory.GetVoiceoverDataAnimeById(idFromAnimeGo));
+                _uriFactory.GetVoiceoverDataAnime(idFromAnimeGo));
             using var document = await _requestParserHandler.SendJsonRequestAsync(requestMessage);
 
             var dubbingAnimeData = _parserFromIDocument.GetDubbingDataAnimeFromPlayerAsync(document);
@@ -123,11 +123,12 @@ namespace ParserAnimeGO
         /// <summary>
         /// Получить фото по аниме
         /// </summary>
-        /// <param name="imgHref"></param>
+        /// <param name="imgIdFromAnimeGo"></param>
         /// <returns></returns>
-        public async Task<Stream> GetAnimeImageAsync(string imgHref)
+        public async Task<Stream> GetAnimeImageAsync(string imgIdFromAnimeGo)
         {
-            var request = _requestParserFactory.GetImageRequestMessage(new Uri(imgHref));
+            var uri = _uriFactory.GetAnimeImage(imgIdFromAnimeGo);
+            var request = _requestParserFactory.GetImageRequestMessage(uri);
             return await _requestParserHandler.SendImageRequestAsync(request);
         }
 

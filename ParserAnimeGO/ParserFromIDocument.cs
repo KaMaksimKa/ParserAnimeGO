@@ -86,7 +86,13 @@ namespace ParserAnimeGO
             double.TryParse(document.QuerySelector(".rating-value")?.Text().Trim(), out double rateResult);
             double? rate = rateResult == 0 ? null : rateResult;
 
-            var imgUrl = document.QuerySelector(".anime-poster")?.QuerySelector("img")?.GetAttribute("src")?.Trim();
+            var imgId = document
+                .QuerySelector(".anime-poster")
+                ?.QuerySelector("img")
+                ?.GetAttribute("src")
+                ?.Trim()
+                ?.Split("/").Last()
+                .Split(".").First();
 
 
             if (document.QuerySelector(".anime-info")?.QuerySelectorAll("dt") is { } elements)
@@ -135,7 +141,7 @@ namespace ParserAnimeGO
                 Duration = duration,
                 NextEpisode = nextEpisode,
                 Dubbing = voiceovers,
-                ImgHref = imgUrl,
+                ImgIdFromAnimeGo = imgId,
                 IdForComments = idForComments
             };
             
