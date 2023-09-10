@@ -16,7 +16,7 @@ namespace ParserAnimeGO.Interface
         public ShowAnimeData? GetShowDataAnime(IDocument document);
         public DubbingAnimeData? GetDubbingDataAnimeFromPlayerAsync(IDocument document);
         public List<AnimeNotificationFromParser> GetAnimeNotificationsFromParserAsync(IDocument document);
-        public List<AnimeComment> GetAnimeComments(IDocument document);
+        public List<AnimeCommentFromParser> GetAnimeComments(IDocument document);
 
     }
 }

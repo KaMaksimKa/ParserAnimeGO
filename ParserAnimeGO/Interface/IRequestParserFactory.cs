@@ -10,5 +10,6 @@ namespace ParserAnimeGO.Interface
     {
         HttpRequestMessage GetHtmlRequestMessage(Uri uri);
         HttpRequestMessage GetJsonRequestMessage(Uri uri);
+        HttpRequestMessage GetImageRequestMessage(Uri uri);
     }
 }

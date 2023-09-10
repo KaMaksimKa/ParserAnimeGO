@@ -2,7 +2,7 @@
 {
     public class AnimeFromParser
     {
-        public long? IdFromAnimeGo { get; set; }
+        public long IdFromAnimeGo { get; set; }
         public string? TitleEn { get; set; }
         public string? TitleRu { get; set; }
         public string? Type { get; set; }
@@ -18,7 +18,7 @@
         public int? Dropped { get; set; }
         public int? OnHold { get; set; }
         public string? Href { get; set; }
-        public string? ImgHref { get; set; }
+        public string? ImgIdFromAnimeGo { get; set; }
         public string? NextEpisode { get; set; }
         public string? Duration { get; set; }
         public long? IdForComments { get; set; }
@@ -27,9 +27,10 @@
         public List<string> Dubbing { get; set; } = new List<string>();
         public List<string> DubbingFromFirstEpisode { get; set; } = new List<string>();
 
-        public void UpdateWithDubbingPartialAnimeData(PartialAnimeData partialAnimeData)
+        public void UpdateWithPartialAnimeData(PartialAnimeData partialAnimeData)
         {
             TitleEn = partialAnimeData.TitleEn;
+            TitleRu = partialAnimeData.TitleRu;
             Type = partialAnimeData.Type;
             Year = partialAnimeData.Year;
             Description = partialAnimeData.Description;
@@ -41,9 +42,10 @@
             Status = mainAnimeData.Status;
             CountEpisode = mainAnimeData.CountEpisode;
             MpaaRate = mainAnimeData.MpaaRate;
-            ImgHref = mainAnimeData.ImgHref;
+            ImgIdFromAnimeGo = mainAnimeData.ImgIdFromAnimeGo;
             NextEpisode = mainAnimeData.NextEpisode;
             Studios = mainAnimeData.Studios;
+            Duration = mainAnimeData.Duration;
             Genres = mainAnimeData.Genres;
             Dubbing = mainAnimeData.Dubbing.ToList();
             IdForComments = mainAnimeData.IdForComments;
@@ -67,6 +69,7 @@
         {
             IdFromAnimeGo = IdFromAnimeGo,
             TitleEn = TitleEn,
+            TitleRu = TitleRu,
             Type = Type,
             Year = Year,
             Description = Description,
@@ -78,7 +81,8 @@
             Status = Status,
             CountEpisode = CountEpisode,
             MpaaRate = MpaaRate,
-            ImgHref = ImgHref,
+            ImgIdFromAnimeGo = ImgIdFromAnimeGo,
+            Duration = Duration,
             NextEpisode = NextEpisode,
             Studios = Studios,
             Genres = Genres,

@@ -1,6 +1,6 @@
 ﻿namespace ParserAnimeGO.Models
 {
-    public class AnimeComment
+    public class AnimeCommentFromParser
     {
         public long IdForComments { get; set; }
 
@@ -10,7 +10,7 @@
 
         public string? AuthorName { get; set; }
 
-        public DateTime? CreatedDate { get; set; }
+        public DateTimeOffset? CreatedDate { get; set; }
 
         public int? Score { get; set; }
 

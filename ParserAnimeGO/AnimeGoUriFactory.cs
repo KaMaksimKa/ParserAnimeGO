@@ -87,7 +87,7 @@ namespace ParserAnimeGO
         /// </summary>
         /// <param name="idFromAnimeGo"></param>
         /// <returns></returns>
-        public Uri GetShowDataAnimeById(long idFromAnimeGo)
+        public Uri GetShowDataAnime(long idFromAnimeGo)
         {
             return new Uri(BaseUri, $"animelist/{idFromAnimeGo}/show");
         }
@@ -97,7 +97,7 @@ namespace ParserAnimeGO
         /// </summary>
         /// <param name="idFromAnimeGo"></param>
         /// <returns></returns>
-        public Uri GetVoiceoverDataAnimeById(long idFromAnimeGo)
+        public Uri GetVoiceoverDataAnime(long idFromAnimeGo)
         {
             return new Uri(BaseUri, $"anime/{idFromAnimeGo}/player?_allow=true");
         }
@@ -123,5 +123,9 @@ namespace ParserAnimeGO
             return new Uri(BaseUri, $"comment/{idForComments}/1/show?view=list&page={numberOfPage}&limit={limit}");
         }
 
+        public Uri GetAnimeImage(string imgIdFromAnimeGo)
+        {
+            return new Uri(BaseUri, $"upload/anime/images/{imgIdFromAnimeGo}.jpg");
+        }
     }
 }

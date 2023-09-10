@@ -21,7 +21,7 @@
         public string? Duration { get; set; }
         public List<string> Dubbing { get; set; } = new List<string>();
         public string? ShotByRanobe { get; set; }
-        public string? ImgHref { get; set; }
+        public string? ImgIdFromAnimeGo { get; set; }
         public long? IdForComments { get; set; }
     }
 }
