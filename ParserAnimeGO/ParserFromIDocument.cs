@@ -3,6 +3,7 @@ using ParserAnimeGO.Interface;
 using ParserAnimeGO.Models;
 using System.Net;
 using AngleSharp;
+using System.Globalization;
 
 namespace ParserAnimeGO
 {
@@ -83,8 +84,14 @@ namespace ParserAnimeGO
             long.TryParse(href?.Split("-")[^1], out var idFromAnimeGoResult);
             long? idFromAnimeGo = idFromAnimeGoResult == 0 ? null : idFromAnimeGoResult;
 
-            double.TryParse(document.QuerySelector(".rating-value")?.Text().Trim(), out double rateResult);
+            Console.WriteLine(document.QuerySelector(".rating-value").Text());
+            Console.WriteLine(document.QuerySelector(".rating-value")?.Text().Trim());
+            double.TryParse(document.QuerySelector(".rating-value")?.Text().Replace(",", ".").Trim(), out double rateResult);
+            Console.WriteLine(rateResult);
+            Console.WriteLine(rateResult + 1);
+            Console.WriteLine(rateResult + 2);
             double? rate = rateResult == 0 ? null : rateResult;
+            
 
             var imgId = document
                 .QuerySelector(".anime-poster")
@@ -120,8 +127,9 @@ namespace ParserAnimeGO
                                    new List<string>();
             dictionary.TryGetValue("Длительность", out string? duration);
             dictionary.TryGetValue("Следующий эпизод", out string? nextEpisode);
+            nextEpisode = string.Join(" ", nextEpisode?.Split(new[] { " ", "\n" }, StringSplitOptions.RemoveEmptyEntries) ??Array.Empty<string?>());
 
-            dictionary.TryGetValue("Озвучка ", out string? voiceoverValue);
+            dictionary.TryGetValue("Озвучка", out string? voiceoverValue);
             List<string> voiceovers = voiceoverValue?.Split(",").Select(v => v.Trim()).ToList() ??
                                       new List<string>();
 
@@ -142,7 +150,8 @@ namespace ParserAnimeGO
                 NextEpisode = nextEpisode,
                 Dubbing = voiceovers,
                 ImgIdFromAnimeGo = imgId,
-                IdForComments = idForComments
+                IdForComments = idForComments,
+                
             };
             
         }

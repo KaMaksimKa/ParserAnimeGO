@@ -49,6 +49,7 @@ namespace ParserAnimeGO
             using var response = await GetResponseWithoutTooManyRequests(request);
             var stream = new MemoryStream();
             await (await response.Content.ReadAsStreamAsync()).CopyToAsync(stream);
+            stream.Seek(0, SeekOrigin.Begin);
             return stream;
         }
 

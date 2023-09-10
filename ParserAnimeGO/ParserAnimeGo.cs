@@ -55,41 +55,14 @@ namespace ParserAnimeGO
         {
             List<PartialAnimeData> partialAnimesData = await GetPartialAnimesDataByArgsAsync(animesArgs);
 
-            List<AnimeFromParser> animesFromParser = new List<AnimeFromParser>();
-            foreach (var animeData in partialAnimesData)
-            {
-                if (animeData.IdFromAnimeGo is { } idFromAnimeGo)
-                {
-                    var anime = new AnimeFromParser { IdFromAnimeGo = idFromAnimeGo };
-                    anime.UpdateWithPartialAnimeData(animeData);
-                    animesFromParser.Add(anime);
-                }
-            }
+            return await GetFullAnimesFromPartialAnimesData(partialAnimesData);
+        }
 
-            foreach (var anime in animesFromParser)
-            {
-                if (anime.Href is { } animeHref
-                    && await GetMainAnimeDataByAnimeHrefGoAsync(animeHref) is { } mainAnimeData)
-                {
-                    anime.UpdateWithMainAnimeData(mainAnimeData);
-                }
+        public async Task<List<AnimeFromParser>> GetFullAnimesRangeAsync(List<long> idFromAnimeGoList)
+        {
+            List<PartialAnimeData> partialAnimesData = await GetPartialAnimeDataRangeAsync(idFromAnimeGoList);
 
-                if (anime.IdFromAnimeGo is { } idFromAnimeGo)
-                {
-                    if (await GetShowAnimeDataByIdFromAnimeGoAsync(idFromAnimeGo) is { } showAnimeData)
-                    {
-                        anime.UpdateWithShowAnimeData(showAnimeData);
-                    }
-
-                    if (await GetDubbingAnimeDataByIdFromAnimeGoAsync(idFromAnimeGo) is { } dubbingAnimeData)
-                    {
-                        anime.UpdateWithDubbingAnimeData(dubbingAnimeData);
-                    }
-                }
-            }
-
-
-            return animesFromParser;
+            return await GetFullAnimesFromPartialAnimesData(partialAnimesData);
         }
 
         public async Task<List<PartialAnimeData>> GetPartialAnimeDataRangeAsync(List<long> idFromAnimeGoList)
@@ -108,11 +81,17 @@ namespace ParserAnimeGO
                 {
                     break;
                 }
-                partialAnimesData.AddRange(partialAnimeData);
+                partialAnimesData.AddRange(partialAnimeData.Where(x => x.IdFromAnimeGo.HasValue && idFromAnimeGoList.Contains(x.IdFromAnimeGo.Value)).ToList());
+
+                if (partialAnimesData.Count == idFromAnimeGoList.Count)
+                {
+                    break;
+                }
+
                 numberOfPage++;
             }
 
-            return partialAnimesData.Where(x => x.IdFromAnimeGo.HasValue && idFromAnimeGoList.Contains(x.IdFromAnimeGo.Value)).ToList();
+            return partialAnimesData;
         }
 
         public async Task<List<MainAnimeData>> GetMainAnimeDataRangeAsync(List<long> idFromAnimeGoList)
@@ -175,6 +154,44 @@ namespace ParserAnimeGO
             } while (commentsByAnime.Any());
 
             return comments;
+        }
+
+        public async Task<List<AnimeFromParser>> GetFullAnimesFromPartialAnimesData(List<PartialAnimeData> partialAnimesData)
+        {
+            List<AnimeFromParser> animesFromParser = new List<AnimeFromParser>();
+            foreach (var animeData in partialAnimesData)
+            {
+                if (animeData.IdFromAnimeGo is { } idFromAnimeGo)
+                {
+                    var anime = new AnimeFromParser { IdFromAnimeGo = idFromAnimeGo };
+                    anime.UpdateWithPartialAnimeData(animeData);
+                    animesFromParser.Add(anime);
+                }
+            }
+
+            foreach (var anime in animesFromParser)
+            {
+                if (anime.Href is { } animeHref
+                    && await GetMainAnimeDataByAnimeHrefGoAsync(animeHref) is { } mainAnimeData)
+                {
+                    anime.UpdateWithMainAnimeData(mainAnimeData);
+                }
+
+                if (anime.IdFromAnimeGo is { } idFromAnimeGo)
+                {
+                    if (await GetShowAnimeDataByIdFromAnimeGoAsync(idFromAnimeGo) is { } showAnimeData)
+                    {
+                        anime.UpdateWithShowAnimeData(showAnimeData);
+                    }
+
+                    if (await GetDubbingAnimeDataByIdFromAnimeGoAsync(idFromAnimeGo) is { } dubbingAnimeData)
+                    {
+                        anime.UpdateWithDubbingAnimeData(dubbingAnimeData);
+                    }
+                }
+            }
+
+            return animesFromParser;
         }
     }
 }

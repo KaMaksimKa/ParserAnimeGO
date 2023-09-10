@@ -18,7 +18,7 @@
         public int? Dropped { get; set; }
         public int? OnHold { get; set; }
         public string? Href { get; set; }
-        public string? ImgHref { get; set; }
+        public string? ImgIdFromAnimeGo { get; set; }
         public string? NextEpisode { get; set; }
         public string? Duration { get; set; }
         public long? IdForComments { get; set; }
@@ -42,7 +42,7 @@
             Status = mainAnimeData.Status;
             CountEpisode = mainAnimeData.CountEpisode;
             MpaaRate = mainAnimeData.MpaaRate;
-            ImgHref = mainAnimeData.ImgIdFromAnimeGo;
+            ImgIdFromAnimeGo = mainAnimeData.ImgIdFromAnimeGo;
             NextEpisode = mainAnimeData.NextEpisode;
             Studios = mainAnimeData.Studios;
             Duration = mainAnimeData.Duration;
@@ -81,7 +81,7 @@
             Status = Status,
             CountEpisode = CountEpisode,
             MpaaRate = MpaaRate,
-            ImgIdFromAnimeGo = ImgHref,
+            ImgIdFromAnimeGo = ImgIdFromAnimeGo,
             Duration = Duration,
             NextEpisode = NextEpisode,
             Studios = Studios,
