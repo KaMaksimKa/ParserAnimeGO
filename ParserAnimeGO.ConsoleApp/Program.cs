@@ -14,7 +14,7 @@ var parserDocument = new ParserFromIDocument();
 var uriFactory = new AnimeGoUriFactory();
 var animeParser = new ParserAnimeGo(requestHandler, requestFactory, parserDocument, uriFactory);
 
-var a = await animeParser.GetMainAnimeDataByAnimeHrefGoAsync("https://animego.org/anime/reinkarnaciya-bezrabotnogo-istoriya-o-priklyucheniyah-v-drugom-mire-2-s2333");
+var a = await animeParser.GetMainAnimeDataByAnimeHrefGoAsync("https://animego.org/anime/shpionskiy-klass-2-s2372");
 
 Console.WriteLine(a.Rate);
 Console.ReadLine();

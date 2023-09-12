@@ -84,9 +84,9 @@ namespace ParserAnimeGO
             long.TryParse(href?.Split("-")[^1], out var idFromAnimeGoResult);
             long? idFromAnimeGo = idFromAnimeGoResult == 0 ? null : idFromAnimeGoResult;
 
-            double.TryParse(document.QuerySelector(".rating-value")?.Text().Replace(",", ".").Trim(), out double rateResult);
+            double.TryParse(document.QuerySelector(".rating-value")?.Text().Replace(",", ".").Trim(), CultureInfo.InvariantCulture, out double rateResult);
             double? rate = rateResult == 0 ? null : rateResult;
-            
+
 
             var imgId = document
                 .QuerySelector(".anime-poster")
