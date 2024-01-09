@@ -61,6 +61,6 @@ namespace ParserAnimeGO.Interface
         /// </summary>
         /// <param name="document"></param>
         /// <returns></returns>
-        List<EpisodeWatchData> GetEpisodeWatchData(IDocument document);
+        List<VideoData> GetVideoDatas(IDocument document);
     }
 }

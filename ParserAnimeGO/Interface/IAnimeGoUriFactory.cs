@@ -46,5 +46,12 @@ namespace ParserAnimeGO.Interface
         /// <param name="episodeId">id серии на сайте аниме го</param>
         /// <returns></returns>
         Uri GetEpisodeWatchData(long episodeId);
+
+        /// <summary>
+        /// Получить заставку аниме
+        /// </summary>
+        /// <param name="imgIdFromAnimeGo"></param>
+        /// <returns></returns>
+        Uri GetAnimeImage(string imgIdFromAnimeGo);
     }
 }

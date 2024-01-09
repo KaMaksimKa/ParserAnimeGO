@@ -184,11 +184,11 @@ namespace ParserAnimeGO
             {
                 if (episode.EpisodeId.HasValue)
                 {
-                    var episodeWatchData = await GetEpisodeWatchDataAsync(episode.EpisodeId.Value);
+                    var episodeWatchData = await GetVideoDatasAsync(episode.EpisodeId.Value);
                     episodeFullModels.Add(new EpisodeFullModel()
                     {
                         EpisodeData = episode,
-                        EpisodeWatchData = episodeWatchData,
+                        VideoDatas = episodeWatchData,
                     });
                 }
             }

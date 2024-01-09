@@ -123,17 +123,17 @@ namespace ParserAnimeGO
         }
 
         /// <summary>
-        /// Получение подробных данных об одной серии
+        /// Получение информации о доступных видео по одной серии
         /// </summary>
         /// <param name="episodeId"></param>
         /// <returns></returns>
-        public async Task<List<EpisodeWatchData>> GetEpisodeWatchDataAsync(long episodeId)
+        public async Task<List<VideoData>> GetVideoDatasAsync(long episodeId)
         {
             var uri = _uriFactory.GetEpisodeWatchData(episodeId);
             var request = _requestParserFactory.GetJsonRequestMessage(uri);
             var document = await _requestParserHandler.SendJsonRequestAsync(request);
 
-            var episodeWatchData = _parserFromIDocument.GetEpisodeWatchData(document);
+            var episodeWatchData = _parserFromIDocument.GetVideoDatas(document);
 
             foreach (var data in episodeWatchData)
             {

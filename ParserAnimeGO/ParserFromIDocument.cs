@@ -293,9 +293,9 @@ namespace ParserAnimeGO
             return episodeDataList;
         }
 
-        public List<EpisodeWatchData> GetEpisodeWatchData(IDocument document)
+        public List<VideoData> GetVideoDatas(IDocument document)
         {
-            var episodeWatchDataList = new List<EpisodeWatchData>();
+            var videoDatas = new List<VideoData>();
 
             if (document.StatusCode == HttpStatusCode.OK)
             {
@@ -319,7 +319,7 @@ namespace ParserAnimeGO
                     {
                         if (int.TryParse(item.GetAttribute("data-provide-dubbing"), out int dubbingId))
                         {
-                            episodeWatchDataList.Add(new EpisodeWatchData()
+                            videoDatas.Add(new VideoData()
                             {
                                 ProviderName = item.QuerySelector(".video-player-toggle-item-name")?.Text().Trim(),
                                 DubbingName = dubbing[dubbingId],
@@ -330,7 +330,7 @@ namespace ParserAnimeGO
                 }
             }
 
-            return episodeWatchDataList;
+            return videoDatas;
         }
 
         private AnimeCommentData GetAnimeComment(IElement comment)

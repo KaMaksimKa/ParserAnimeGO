@@ -10,6 +10,6 @@ namespace ParserAnimeGO.Models
     public class EpisodeFullModel
     {
         public EpisodeData EpisodeData { get; set; } = null!;
-        public List<EpisodeWatchData> EpisodeWatchData { get; set; } = null!;
+        public List<VideoData> VideoDatas { get; set; } = null!;
     }
 }
