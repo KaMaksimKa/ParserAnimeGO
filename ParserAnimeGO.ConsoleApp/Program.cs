@@ -14,7 +14,10 @@ var parserDocument = new ParserFromIDocument();
 var uriFactory = new AnimeGoUriFactory();
 var animeParser = new ParserAnimeGo(requestHandler, requestFactory, parserDocument, uriFactory);
 
-var a = await animeParser.GetMainAnimeDataByAnimeHrefGoAsync("https://animego.org/anime/shpionskiy-klass-2-s2372");
 
-Console.WriteLine(a.Rate);
-Console.ReadLine();
+
+
+var req = requestFactory.GetJsonRequestMessage(uriFactory.GetEpisodeWatchData(1));
+var res = await requestHandler.SendJsonRequestAsync(req);
+var list = parserDocument.GetEpisodeWatchData(res);
+Console.WriteLine(list.Count);

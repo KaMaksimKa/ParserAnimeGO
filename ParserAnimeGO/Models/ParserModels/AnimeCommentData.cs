@@ -1,6 +1,6 @@
-﻿namespace ParserAnimeGO.Models
+﻿namespace ParserAnimeGO.Models.ParserModels
 {
-    public class AnimeCommentFromParser
+    public class AnimeCommentData
     {
         public long IdForComments { get; set; }
 

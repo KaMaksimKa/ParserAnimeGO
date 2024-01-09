@@ -1,8 +1,8 @@
-﻿namespace ParserAnimeGO.Models
+﻿namespace ParserAnimeGO.Models.ParserModels
 {
-    public class AnimeNotificationFromParser
+    public class AnimeNotificationData
     {
-        public long? IdFromAnimeGo { get; set; }
+        public long? AnimeId { get; set; }
         public string? TitleRu { get; set; }
         public string? Href { get; set; }
         public string? Dubbing { get; set; }

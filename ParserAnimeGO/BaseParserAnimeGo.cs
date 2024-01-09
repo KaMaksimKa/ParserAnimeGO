@@ -1,5 +1,7 @@
 ﻿using ParserAnimeGO.Interface;
 using ParserAnimeGO.Models;
+using ParserAnimeGO.Models.ParserModels;
+using System.Collections.Generic;
 
 namespace ParserAnimeGO
 {
@@ -51,19 +53,19 @@ namespace ParserAnimeGO
         /// <summary>
         /// Получить информацию о просмотрах об отдельном аниме
         /// </summary>
-        /// <param name="idFromAnimeGo"></param>
+        /// <param name="animeId"></param>
         /// <returns></returns>
-        public async Task<ShowAnimeData?> GetShowAnimeDataByIdFromAnimeGoAsync(long idFromAnimeGo)
+        public async Task<ShowAnimeData?> GetShowAnimeDataByIdFromAnimeGoAsync(long animeId)
         {
             using var requestMessage = _requestParserFactory.GetJsonRequestMessage(
-                _uriFactory.GetShowDataAnime(idFromAnimeGo));
+                _uriFactory.GetShowDataAnime(animeId));
             using var document = await _requestParserHandler.SendJsonRequestAsync(requestMessage);
 
             var showAnimeData = _parserFromIDocument.GetShowDataAnime(document);
 
             if (showAnimeData != null)
             {
-                showAnimeData.IdFromAnimeGo = idFromAnimeGo;
+                showAnimeData.AnimeId = animeId;
             }
 
 
@@ -71,37 +73,16 @@ namespace ParserAnimeGO
         }
 
         /// <summary>
-        /// Получить информацию о озвучке на первой серии отдельного аниме
-        /// </summary>
-        /// <param name="idFromAnimeGo"></param>
-        /// <returns></returns>
-        public async Task<DubbingAnimeData?> GetDubbingAnimeDataByIdFromAnimeGoAsync(long idFromAnimeGo)
-        {
-            using var requestMessage = _requestParserFactory.GetJsonRequestMessage(
-                _uriFactory.GetVoiceoverDataAnime(idFromAnimeGo));
-            using var document = await _requestParserHandler.SendJsonRequestAsync(requestMessage);
-
-            var dubbingAnimeData = _parserFromIDocument.GetDubbingDataAnimeFromPlayerAsync(document);
-
-            if (dubbingAnimeData != null)
-            {
-                dubbingAnimeData.IdFromAnimeGo = idFromAnimeGo;
-            }
-
-            return dubbingAnimeData;
-        }
-
-        /// <summary>
         /// Получить информацию об выходе новых серий
         /// </summary>
         /// <returns></returns>
-        public async Task<List<AnimeNotificationFromParser>> GetAnimeNotificationsFromAnimeGoAsync()
+        public async Task<List<AnimeNotificationData>> GetAnimeNotificationsFromAnimeGoAsync()
         {
             var uri = _uriFactory.GetAnimeNotifications();
             var request = _requestParserFactory.GetHtmlRequestMessage(uri);
             var document = await _requestParserHandler.SendHtmlRequestAsync(request);
 
-            return _parserFromIDocument.GetAnimeNotificationsFromParserAsync(document);
+            return _parserFromIDocument.GetAnimeNotificationsData(document);
         }
 
         /// <summary>
@@ -111,25 +92,55 @@ namespace ParserAnimeGO
         /// <param name="numberOfPage"></param>
         /// <param name="limit"></param>
         /// <returns></returns>
-        public async Task<List<AnimeCommentFromParser>> GetAnimeCommentsAsync(long idForComments, int numberOfPage = 1, int limit = 20)
+        public async Task<List<AnimeCommentData>> GetAnimeCommentsAsync(long idForComments, int numberOfPage = 1, int limit = 20)
         {
             var uri = _uriFactory.GetAnimeComments(idForComments, numberOfPage,limit);
             var request = _requestParserFactory.GetJsonRequestMessage(uri);
             var document = await _requestParserHandler.SendJsonRequestAsync(request);
 
-            return _parserFromIDocument.GetAnimeComments(document);
+            return _parserFromIDocument.GetAnimeCommentsData(document);
         }
 
         /// <summary>
-        /// Получить фото по аниме
+        /// Получение информации об сериях в аниме
         /// </summary>
-        /// <param name="imgIdFromAnimeGo"></param>
+        /// <param name="animeId"></param>
         /// <returns></returns>
-        public async Task<Stream> GetAnimeImageAsync(string imgIdFromAnimeGo)
+        public async Task<List<EpisodeData>> GetEpisodesDataAsync(long animeId)
         {
-            var uri = _uriFactory.GetAnimeImage(imgIdFromAnimeGo);
-            var request = _requestParserFactory.GetImageRequestMessage(uri);
-            return await _requestParserHandler.SendImageRequestAsync(request);
+            var uri = _uriFactory.GetEpisodeData(animeId);
+            var request = _requestParserFactory.GetJsonRequestMessage(uri);
+            var document = await _requestParserHandler.SendJsonRequestAsync(request);
+
+            var episodesData = _parserFromIDocument.GetEpisodesData(document);
+
+            foreach (var episode in episodesData)
+            {
+                episode.AnimeId = animeId;
+            }
+
+            return episodesData;
+        }
+
+        /// <summary>
+        /// Получение подробных данных об одной серии
+        /// </summary>
+        /// <param name="episodeId"></param>
+        /// <returns></returns>
+        public async Task<List<EpisodeWatchData>> GetEpisodeWatchDataAsync(long episodeId)
+        {
+            var uri = _uriFactory.GetEpisodeWatchData(episodeId);
+            var request = _requestParserFactory.GetJsonRequestMessage(uri);
+            var document = await _requestParserHandler.SendJsonRequestAsync(request);
+
+            var episodeWatchData = _parserFromIDocument.GetEpisodeWatchData(document);
+
+            foreach (var data in episodeWatchData)
+            {
+                data.EpisodeId = episodeId;
+            }
+
+            return episodeWatchData;
         }
 
         public void Dispose()

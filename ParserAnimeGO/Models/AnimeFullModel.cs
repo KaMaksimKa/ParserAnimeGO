@@ -1,8 +1,10 @@
-﻿namespace ParserAnimeGO.Models
+﻿using ParserAnimeGO.Models.ParserModels;
+
+namespace ParserAnimeGO.Models
 {
-    public class AnimeFromParser
+    public class AnimeFullModel
     {
-        public long IdFromAnimeGo { get; set; }
+        public long AnimeId { get; set; }
         public string? TitleEn { get; set; }
         public string? TitleRu { get; set; }
         public string? Type { get; set; }
@@ -25,7 +27,6 @@
         public List<string> Studios { get; set; } = new List<string>();
         public List<string> Genres { get; set; } = new List<string>();
         public List<string> Dubbing { get; set; } = new List<string>();
-        public List<string> DubbingFromFirstEpisode { get; set; } = new List<string>();
 
         public void UpdateWithPartialAnimeData(PartialAnimeData partialAnimeData)
         {
@@ -59,47 +60,5 @@
             Dropped = showAnimeData.Dropped;
             OnHold = showAnimeData.OnHold;
         }
-        public void UpdateWithDubbingAnimeData(DubbingAnimeData dubbingAnimeData)
-        {
-            DubbingFromFirstEpisode = dubbingAnimeData.Dubbing;
-        }
-
-
-        public PartialAnimeData ToPartialAnimeData() => new PartialAnimeData
-        {
-            IdFromAnimeGo = IdFromAnimeGo,
-            TitleEn = TitleEn,
-            TitleRu = TitleRu,
-            Type = Type,
-            Year = Year,
-            Description = Description,
-            Href = Href,
-        };
-        public MainAnimeData ToMainAnimeData() => new MainAnimeData
-        {
-            Rate = Rate,
-            Status = Status,
-            CountEpisode = CountEpisode,
-            MpaaRate = MpaaRate,
-            ImgIdFromAnimeGo = ImgIdFromAnimeGo,
-            Duration = Duration,
-            NextEpisode = NextEpisode,
-            Studios = Studios,
-            Genres = Genres,
-            Dubbing = Dubbing,
-        };
-        public ShowAnimeData ToShowAnimeData() => new ShowAnimeData
-        {
-            Planned = Planned,
-            Completed = Completed,
-            Watching = Watching,
-            Dropped = Dropped,
-            OnHold = OnHold,
-        };
-        public DubbingAnimeData ToDubbingAnimeData() => new DubbingAnimeData
-        {
-            Dubbing = DubbingFromFirstEpisode
-        };
-   
     }
 }
