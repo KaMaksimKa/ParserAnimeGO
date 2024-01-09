@@ -8,11 +8,6 @@ namespace ParserAnimeGO
     {
         private static readonly Uri BaseUri = new Uri("https://animego.org");
 
-        /// <summary>
-        /// Получить url до страницы со всеми аниме
-        /// </summary>
-        /// <param name="animeArgs"></param>
-        /// <returns></returns>
         public Uri GetAnimes(AnimesArgs animeArgs)
         {
             var url = new StringBuilder("anime");
@@ -82,50 +77,34 @@ namespace ParserAnimeGO
             return new Uri(BaseUri, url.ToString());
         }
 
-        /// <summary>
-        /// Получить url до информации о списках у пользователей для аниме
-        /// </summary>
-        /// <param name="idFromAnimeGo"></param>
-        /// <returns></returns>
-        public Uri GetShowDataAnime(long idFromAnimeGo)
+        public Uri GetShowDataAnime(long animeId)
         {
-            return new Uri(BaseUri, $"animelist/{idFromAnimeGo}/show");
+            return new Uri(BaseUri, $"animelist/{animeId}/show");
         }
 
-        /// <summary>
-        /// Получить url до информации о озвучке у первой серии аниме
-        /// </summary>
-        /// <param name="idFromAnimeGo"></param>
-        /// <returns></returns>
-        public Uri GetVoiceoverDataAnime(long idFromAnimeGo)
+        public Uri GetEpisodeData(long animeId)
         {
-            return new Uri(BaseUri, $"anime/{idFromAnimeGo}/player?_allow=true");
+            return new Uri(BaseUri, $"anime/{animeId}/player?_allow=true");
         }
 
-        /// <summary>
-        /// Получить url до страницы с информацией о выходе новых серий
-        /// </summary>
-        /// <returns></returns>
         public Uri GetAnimeNotifications()
         {
             return BaseUri;
         }
 
-        /// <summary>
-        /// Получить комментарии по отдельному аниме
-        /// </summary>
-        /// <param name="idForComments"></param>
-        /// <param name="numberOfPage"></param>
-        /// <param name="limit"></param>
-        /// <returns></returns>
+        public Uri GetAnimeImage(string imgIdFromAnimeGo)
+        {
+            return new Uri(BaseUri, $"upload/anime/images/{imgIdFromAnimeGo}.jpg");
+        }
+
         public Uri GetAnimeComments(long idForComments, int numberOfPage, int limit)
         {
             return new Uri(BaseUri, $"comment/{idForComments}/1/show?view=list&page={numberOfPage}&limit={limit}");
         }
 
-        public Uri GetAnimeImage(string imgIdFromAnimeGo)
+        public Uri GetEpisodeWatchData(long episodeId)
         {
-            return new Uri(BaseUri, $"upload/anime/images/{imgIdFromAnimeGo}.jpg");
+            return new Uri(BaseUri, $"anime/series?id={episodeId}");
         }
     }
 }

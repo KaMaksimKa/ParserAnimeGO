@@ -35,7 +35,7 @@ namespace ParserAnimeGO
 
             var jsonText = await response.Content.ReadAsStringAsync();
             JToken jToken = JToken.Parse(jsonText);
-            var html = jToken.Last?.Last?.ToString();
+            var html = jToken.SelectToken("content")?.ToString();
 
             return await _browsingContext.OpenAsync(req =>
             {
