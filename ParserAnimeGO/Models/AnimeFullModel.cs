@@ -27,6 +27,7 @@ namespace ParserAnimeGO.Models
         public List<string> Studios { get; set; } = new List<string>();
         public List<string> Genres { get; set; } = new List<string>();
         public List<string> Dubbing { get; set; } = new List<string>();
+        public List<EpisodeData> Episodes { get; set; } = new List<EpisodeData>();
 
         public void UpdateWithPartialAnimeData(PartialAnimeData partialAnimeData)
         {
