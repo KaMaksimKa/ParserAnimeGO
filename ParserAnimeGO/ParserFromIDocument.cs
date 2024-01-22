@@ -278,11 +278,17 @@ namespace ParserAnimeGO
             {
                 foreach (var item in document.QuerySelectorAll(".video-player-bar-series-item"))
                 {
+
+                    var episodeReleasedString = item.GetAttribute("data-episode-released");
+                    DateTimeOffset? episodeReleased = DateTimeOffset.TryParseExact(episodeReleasedString, "d MMMM yyyy", new System.Globalization.CultureInfo("ru-RU"), System.Globalization.DateTimeStyles.None, out DateTimeOffset releasedParsed)
+                        ? releasedParsed
+                        : null;
+
                     episodeDataList.Add(new EpisodeData()
                     {
                         EpisodeNumber = int.TryParse(item.GetAttribute("data-episode"), out var parsedNumber) ? parsedNumber : null,
                         EpisodeId = long.TryParse(item.GetAttribute("data-id"), out var parsedSeriesId) ? parsedSeriesId : null,
-                        EpisodeReleased = item.GetAttribute("data-episode-released"),
+                        EpisodeReleased = episodeReleased,
                         EpisodeTitle = item.GetAttribute("data-episode-title"),
                         EpisodeDescription = item.GetAttribute("data-episode-description"),
                         EpisodeType = int.TryParse(item.GetAttribute("data-episode-type"), out var parsedType) ? parsedType : null,
