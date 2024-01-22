@@ -2,8 +2,6 @@
 {
     public class VideoData
     {
-        public long EpisodeId { get; set; }
-
         public string? DubbingName { get; set; }
          
         public string? ProviderName { get; set; }

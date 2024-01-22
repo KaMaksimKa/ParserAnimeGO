@@ -55,7 +55,7 @@ namespace ParserAnimeGO
         /// </summary>
         /// <param name="animeId"></param>
         /// <returns></returns>
-        public async Task<ShowAnimeData?> GetShowAnimeDataByIdFromAnimeGoAsync(long animeId)
+        public async Task<ShowAnimeData?> GetShowDataByAnimeIdAsync(long animeId)
         {
             using var requestMessage = _requestParserFactory.GetJsonRequestMessage(
                 _uriFactory.GetShowDataAnime(animeId));
@@ -76,7 +76,7 @@ namespace ParserAnimeGO
         /// Получить информацию об выходе новых серий
         /// </summary>
         /// <returns></returns>
-        public async Task<List<AnimeNotificationData>> GetAnimeNotificationsFromAnimeGoAsync()
+        public async Task<List<AnimeNotificationData>> GetAnimeNotificationsAsync()
         {
             var uri = _uriFactory.GetAnimeNotifications();
             var request = _requestParserFactory.GetHtmlRequestMessage(uri);
@@ -127,20 +127,37 @@ namespace ParserAnimeGO
         /// </summary>
         /// <param name="episodeId"></param>
         /// <returns></returns>
-        public async Task<List<VideoData>> GetVideoDatasAsync(long episodeId)
+        public async Task<List<VideoDataFromEpisode>> GetVideoDatasFromEpisodeAsync(long episodeId)
         {
-            var uri = _uriFactory.GetEpisodeWatchData(episodeId);
+            var uri = _uriFactory.GetVideoDatasFromEpisode(episodeId);
             var request = _requestParserFactory.GetJsonRequestMessage(uri);
             var document = await _requestParserHandler.SendJsonRequestAsync(request);
 
-            var episodeWatchData = _parserFromIDocument.GetVideoDatas(document);
+            var episodeVideoDatas = _parserFromIDocument.GetVideoDatas(document);
+            var episodeVideoDatasFromEpisode = episodeVideoDatas
+                .Select(x => new VideoDataFromEpisode(x) { EpisodeId = episodeId })
+                .ToList();
 
-            foreach (var data in episodeWatchData)
-            {
-                data.EpisodeId = episodeId;
-            }
+            return episodeVideoDatasFromEpisode;
+        }
 
-            return episodeWatchData;
+        /// <summary>
+        /// Получение информации о доступных видео по аниме без серий, например, полнометражные фильмы
+        /// </summary>
+        /// <param name="episodeId"></param>
+        /// <returns></returns>
+        public async Task<List<VideoDataFromFilm>> GetVideoDatasFromFilmAsync(long animeId)
+        {
+            var uri = _uriFactory.GetVideoDataFromFilm(animeId);
+            var request = _requestParserFactory.GetJsonRequestMessage(uri);
+            var document = await _requestParserHandler.SendJsonRequestAsync(request);
+
+            var videoDatas = _parserFromIDocument.GetVideoDatas(document);
+            var videoDatasFromFilm = videoDatas
+                .Select(x => new VideoDataFromFilm(x) { AnimeId = animeId })
+                .ToList();
+
+            return videoDatasFromFilm;
         }
 
         public void Dispose()

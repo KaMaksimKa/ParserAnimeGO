@@ -117,7 +117,7 @@ namespace ParserAnimeGO
 
             foreach (var animeId in idFromAnimeGoList)
             {
-                if (await GetShowAnimeDataByIdFromAnimeGoAsync(animeId) is { } showAnimeData)
+                if (await GetShowDataByAnimeIdAsync(animeId) is { } showAnimeData)
                 {
                     showAnimesData.Add(showAnimeData);
                 }
@@ -165,7 +165,7 @@ namespace ParserAnimeGO
 
                 if (anime.AnimeId is { } animeId)
                 {
-                    if (await GetShowAnimeDataByIdFromAnimeGoAsync(animeId) is { } showAnimeData)
+                    if (await GetShowDataByAnimeIdAsync(animeId) is { } showAnimeData)
                     {
                         anime.UpdateWithShowAnimeData(showAnimeData);
                     }
@@ -175,27 +175,6 @@ namespace ParserAnimeGO
             }
 
             return animesFromParser;
-        }
-
-        public async Task<List<EpisodeFullModel>> GetEpisodeFullModel(long animeId)
-        {
-            var episodeFullModels = new List<EpisodeFullModel>();
-
-            var episodesData = await GetEpisodesDataAsync(animeId);
-            foreach (var episode in episodesData)
-            {
-                if (episode.EpisodeId.HasValue)
-                {
-                    var episodeWatchData = await GetVideoDatasAsync(episode.EpisodeId.Value);
-                    episodeFullModels.Add(new EpisodeFullModel()
-                    {
-                        EpisodeData = episode,
-                        VideoDatas = episodeWatchData,
-                    });
-                }
-            }
-
-            return episodeFullModels;
         }
     }
 }

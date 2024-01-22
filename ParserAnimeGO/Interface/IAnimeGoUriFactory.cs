@@ -19,11 +19,18 @@ namespace ParserAnimeGO.Interface
         Uri GetShowDataAnime(long animeId);
 
         /// <summary>
-        /// Получить url до информации о озвучке у первой серии аниме
+        /// Получить url до информации о информации о эпизодах
         /// </summary>
         /// <param name="animeId">id anime на сайте animego.org</param>
         /// <returns></returns>
         Uri GetEpisodeData(long animeId);
+
+        /// <summary>
+        /// Получить информацию об озвучках и плеерах по аниме где нет деления на серии(полнометражные фильмы например)
+        /// </summary>
+        /// <param name="animeId">id anime на сайте animego.org</param>
+        /// <returns></returns>
+        Uri GetVideoDataFromFilm(long animeId);
 
         /// <summary>
         /// Получить url до страницы с информацией о выходе новых серий
@@ -45,7 +52,7 @@ namespace ParserAnimeGO.Interface
         /// </summary>
         /// <param name="episodeId">id серии на сайте аниме го</param>
         /// <returns></returns>
-        Uri GetEpisodeWatchData(long episodeId);
+        Uri GetVideoDatasFromEpisode(long episodeId);
 
         /// <summary>
         /// Получить заставку аниме

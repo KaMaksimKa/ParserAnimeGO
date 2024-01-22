@@ -102,9 +102,14 @@ namespace ParserAnimeGO
             return new Uri(BaseUri, $"comment/{idForComments}/1/show?view=list&page={numberOfPage}&limit={limit}");
         }
 
-        public Uri GetEpisodeWatchData(long episodeId)
+        public Uri GetVideoDatasFromEpisode(long episodeId)
         {
             return new Uri(BaseUri, $"anime/series?id={episodeId}");
+        }
+
+        public Uri GetVideoDataFromFilm(long animeId)
+        {
+            return new Uri(BaseUri, $"anime/{animeId}/player?_allow=true");
         }
     }
 }

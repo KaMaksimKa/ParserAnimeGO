@@ -17,7 +17,7 @@ var animeParser = new ParserAnimeGo(requestHandler, requestFactory, parserDocume
 
 
 
-var req = requestFactory.GetJsonRequestMessage(uriFactory.GetEpisodeWatchData(1));
+var req = requestFactory.GetJsonRequestMessage(uriFactory.GetEpisodeData(2515));
 var res = await requestHandler.SendJsonRequestAsync(req);
 var list = parserDocument.GetVideoDatas(res);
 Console.WriteLine(list.Count);
