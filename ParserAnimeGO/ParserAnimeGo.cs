@@ -169,8 +169,6 @@ namespace ParserAnimeGO
                     {
                         anime.UpdateWithShowAnimeData(showAnimeData);
                     }
-
-                    anime.Episodes = await GetEpisodesDataAsync(animeId);
                 }
             }
 

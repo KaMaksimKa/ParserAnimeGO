@@ -229,7 +229,7 @@ namespace ParserAnimeGO
                     TitleRu = titleRu,
                     Dubbing = dubbing,
                     Href = href,
-                    SerialNumber = serialNumber == 0 ? null : serialNumber
+                    EpisodeNumber = serialNumber == 0 ? null : serialNumber
                 });
             }
 
